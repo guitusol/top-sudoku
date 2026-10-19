@@ -387,12 +387,28 @@ class SudokuApp {
       return;
     }
 
-    // Modo Jugando: REGLA DE ORO DE GUILLERMO -> Si el número no es correcto según la distribución, se rechaza
+    // Modo Jugando: VALIDACIÓN PEDAGÓGICA ESTRICTA (Escuela de Lógica)
+    // Se valida contra la solución matemática única para impedir callejones sin salida
     if (this.mode === 'jugando') {
-      if (!this.engine.isValidMove(this.playGrid, row, col, num)) {
-        this.flashCellError(row, col);
-        this.setStatus(`¡Rechazado! El número ${num} no es válido en esta posición.`, 'error');
-        return;
+      if (!this.solutionGrid) {
+        const res = this.engine.solve(this.initialGrid);
+        if (res.solved) {
+          this.solutionGrid = this.engine.cloneGrid(res.solution);
+        }
+      }
+
+      if (this.solutionGrid && this.solutionGrid[row][col] !== 0) {
+        if (num !== this.solutionGrid[row][col]) {
+          this.flashCellError(row, col);
+          this.setStatus(`¡Rechazado! El número ${num} no es correcto para esta casilla en este Sudoku.`, 'error');
+          return;
+        }
+      } else {
+        if (!this.engine.isValidMove(this.playGrid, row, col, num)) {
+          this.flashCellError(row, col);
+          this.setStatus(`¡Rechazado! El número ${num} colisiona en fila, columna o caja 3x3.`, 'error');
+          return;
+        }
       }
 
       this.playGrid[row][col] = num;
@@ -572,6 +588,8 @@ class SudokuApp {
 
     this.initialGrid = this.engine.cloneGrid(puzzle.initialGrid);
     this.playGrid = this.engine.cloneGrid(puzzle.initialGrid);
+    const res = this.engine.solve(puzzle.initialGrid);
+    this.solutionGrid = res.solved ? this.engine.cloneGrid(res.solution) : null;
     this.showPossibilities = false;
 
     this.dom.startDateInput.value = '';
@@ -608,6 +626,10 @@ class SudokuApp {
 
     // 1. Restaurar el tablero de juego a las casillas iniciales del planteamiento (limpia soluciones o números puestos)
     this.playGrid = this.engine.cloneGrid(this.initialGrid);
+    if (!this.solutionGrid) {
+      const res = this.engine.solve(this.initialGrid);
+      this.solutionGrid = res.solved ? this.engine.cloneGrid(res.solution) : null;
+    }
     this.mode = 'jugando';
     this.startTime = new Date();
     this.elapsedSeconds = 0;
