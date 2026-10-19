@@ -76,18 +76,25 @@ body {
   font-weight: 600;
 }
 
-.sudoku-cell.selected {
-  background-color: var(--cell-selected) !important;
-  outline: 2px solid #3b82f6;
+/* Celda actualmente seleccionada (foco) */
+.sudoku-cell.selected,
+.possibility-cell.selected {
+  background-color: #bfdbfe !important;
+  outline: 2.5px solid #2563eb;
   z-index: 10;
 }
 
-.sudoku-cell.highlight-axis {
-  background-color: #f8fafc;
+/* Sombreado muy tenue de fila, columna y caja 3x3 */
+.sudoku-cell.highlight-axis,
+.possibility-cell.highlight-axis {
+  background-color: #edf3fa !important;
 }
 
-.sudoku-cell.same-number {
-  background-color: #e0e7ff;
+/* Casillas con el mismo número que la celda activa */
+.sudoku-cell.same-number,
+.possibility-cell.same-number {
+  background-color: #dbeafe !important;
+  font-weight: 700;
 }
 
 .sudoku-cell.cell-error {

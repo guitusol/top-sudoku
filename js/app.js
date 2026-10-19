@@ -236,6 +236,9 @@ class SudokuApp {
         cell.className = 'possibility-cell';
         cell.dataset.row = r;
         cell.dataset.col = c;
+        cell.addEventListener('click', () => {
+          this.selectCell(r, c);
+        });
         this.dom.rightBoard.appendChild(cell);
       }
     }
@@ -250,25 +253,34 @@ class SudokuApp {
 
   updateHighlights() {
     const leftCells = this.dom.leftBoard.querySelectorAll('.sudoku-cell');
+    const rightCells = this.dom.rightBoard?.querySelectorAll('.possibility-cell') || [];
     const selectedVal = this.playGrid[this.selectedRow][this.selectedCol];
 
-    leftCells.forEach(cell => {
-      const r = parseInt(cell.dataset.row, 10);
-      const c = parseInt(cell.dataset.col, 10);
+    const applyHighlightsToCellList = (cells) => {
+      cells.forEach(cell => {
+        const r = parseInt(cell.dataset.row, 10);
+        const c = parseInt(cell.dataset.col, 10);
 
-      cell.classList.remove('selected', 'highlight-axis', 'same-number');
+        cell.classList.remove('selected', 'highlight-axis', 'same-number');
 
-      if (r === this.selectedRow && c === this.selectedCol) {
-        cell.classList.add('selected');
-      } else if (r === this.selectedRow || c === this.selectedCol || 
-                (Math.floor(r / 3) === Math.floor(this.selectedRow / 3) && Math.floor(c / 3) === Math.floor(this.selectedCol / 3))) {
-        cell.classList.add('highlight-axis');
-      }
+        if (r === this.selectedRow && c === this.selectedCol) {
+          cell.classList.add('selected');
+        } else if (r === this.selectedRow || c === this.selectedCol || 
+                  (Math.floor(r / 3) === Math.floor(this.selectedRow / 3) && Math.floor(c / 3) === Math.floor(this.selectedCol / 3))) {
+          // Sombra muy tenue en fila, columna y región 3x3
+          cell.classList.add('highlight-axis');
+        }
 
-      if (selectedVal !== 0 && this.playGrid[r][c] === selectedVal) {
-        cell.classList.add('same-number');
-      }
-    });
+        if (selectedVal !== 0 && this.playGrid[r][c] === selectedVal) {
+          cell.classList.add('same-number');
+        }
+      });
+    };
+
+    applyHighlightsToCellList(leftCells);
+    if (rightCells.length > 0) {
+      applyHighlightsToCellList(rightCells);
+    }
   }
 
   /**
@@ -294,8 +306,8 @@ class SudokuApp {
       }
     });
 
-    this.updateHighlights();
     this.updateRightBoardDisplay();
+    this.updateHighlights();
   }
 
   /**
