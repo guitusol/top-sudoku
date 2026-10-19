@@ -491,16 +491,23 @@ class SudokuApp {
   handlePlantear() {
     this.stopTimer();
     this.mode = 'plantear';
+    this.currentSeed = null;
+    this.currentBoardString = null;
     this.initialGrid = this.engine.createEmptyGrid();
     this.playGrid = this.engine.createEmptyGrid();
+    this.solutionGrid = null;
     this.showPossibilities = false;
-    this.currentPuzzleId = null;
+
+    const nextNum = this.storage.getNextNumberForLevel(this.currentLevel);
+    this.currentPuzzleId = `custom_${Date.now()}`;
+    this.currentNumber = nextNum;
+    this.dom.puzzleNumberInput.value = nextNum;
 
     this.dom.startDateInput.value = '';
     this.dom.elapsedTimeInput.value = '00:00';
-    this.dom.puzzleNumberInput.value = this.storage.getNextNumberForLevel(this.currentLevel);
+    if (this.dom.seedInput) this.dom.seedInput.value = '';
 
-    this.setStatus('Modo PLANTEAR activado: Introduce los números iniciales del nuevo Sudoku.', 'info');
+    this.setStatus(`Modo PLANTEAR activado: Introduce los números iniciales para el Sudoku #${nextNum} (${this.currentLevel.toUpperCase()}). Pulsa "Grabar" al terminar.`, 'info');
     this.updateBoardDisplay();
   }
 
@@ -514,13 +521,51 @@ class SudokuApp {
       return;
     }
 
-    const num = parseInt(this.dom.puzzleNumberInput.value, 10) || 1;
-    const customName = this.currentSeed
-      ? `Sudoku Semilla #${this.currentSeed} (${this.currentLevel.toUpperCase()})`
-      : '';
-    const puzzle = this.storage.savePuzzle(this.currentLevel, num, this.initialGrid, customName);
+    // Comprobar si el planteamiento tiene solución matemática válida antes de guardar
+    const res = this.engine.solve(this.initialGrid);
+    if (!res.solved) {
+      alert('Este planteamiento no tiene ninguna solución matemática válida. Revisa los números introducidos.');
+      this.setStatus('Error: El planteamiento introducido no tiene solución matemática.', 'error');
+      return;
+    }
+    this.solutionGrid = this.engine.cloneGrid(res.solution);
+
+    // Determinar el número asignado en la colección
+    let num = parseInt(this.dom.puzzleNumberInput.value, 10);
+    const existingForLevel = this.storage.getAll().filter(p => p.level === this.currentLevel);
+    const alreadyExists = existingForLevel.some(p => p.number === num && p.id !== this.currentPuzzleId);
+
+    // Si es un nuevo planteamiento o semilla, o si el número ya existe en otro puzle, asignar el siguiente número libre
+    if (!num || isNaN(num) || num <= 0 || alreadyExists) {
+      num = this.storage.getNextNumberForLevel(this.currentLevel);
+      this.dom.puzzleNumberInput.value = num;
+    }
+
+    let customName = '';
+    if (this.currentSeed) {
+      customName = `Sudoku Semilla #${this.currentSeed} (${this.currentLevel.toUpperCase()})`;
+    } else if (this.currentBoardString) {
+      customName = `Sudoku Cadena #${num} (${this.currentLevel.toUpperCase()})`;
+    } else if (this.mode === 'plantear') {
+      customName = `Sudoku Planteado #${num} (${this.currentLevel.toUpperCase()})`;
+    } else {
+      customName = `Sudoku ${this.currentLevel.toUpperCase()} #${num}`;
+    }
+
+    const puzzle = this.storage.savePuzzle(this.currentLevel, num, this.initialGrid, customName, this.currentSeed);
     this.currentPuzzleId = puzzle.id;
-    this.setStatus(`Sudoku grabado con éxito en nivel "${this.currentLevel.toUpperCase()}" con el número ${num}.`, 'success');
+    this.currentNumber = num;
+
+    // Actualizar el número del selector al siguiente hueco libre para el próximo guardado
+    const nextFreeNum = this.storage.getNextNumberForLevel(this.currentLevel);
+    this.dom.puzzleNumberInput.value = nextFreeNum;
+
+    // Si estábamos en modo plantear, pasamos a modo reposo listo para jugar
+    if (this.mode === 'plantear') {
+      this.mode = 'idle';
+    }
+
+    this.setStatus(`Sudoku guardado con éxito en tu colección como #${num} (${puzzle.name}). ¡Queda archivado para el buscador!`, 'success');
   }
 
   /**
@@ -549,17 +594,37 @@ class SudokuApp {
 
     puzzles.forEach(p => {
       const item = document.createElement('div');
-      item.className = 'flex items-center justify-between p-3 border rounded hover:bg-blue-50 cursor-pointer transition';
+      const isDefault = p.id.startsWith('facil_1') || p.id.startsWith('facil_2') || p.id.startsWith('medio_1') || p.id.startsWith('dificil_1') || p.id.startsWith('endemoniado_1');
+      item.className = 'flex items-center justify-between p-3 border rounded hover:bg-blue-50 transition gap-2';
       item.innerHTML = `
-        <div>
-          <span class="font-bold text-blue-900">${p.name}</span>
-          <span class="text-xs ml-2 px-2 py-0.5 rounded ${p.level === 'facil' ? 'bg-green-100 text-green-800' : p.level === 'medio' ? 'bg-yellow-100 text-yellow-800' : p.level === 'dificil' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}">${p.level.toUpperCase()}</span>
-          <div class="text-xs text-gray-500 mt-0.5">Estado: ${p.isSolved ? '✅ Resuelto' : '⏳ Pendiente'} ${p.bestTime ? `| Mejor tiempo: ${this.formatTime(p.bestTime)}` : ''}</div>
+        <div class="flex-1 cursor-pointer" data-action="load">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="font-bold text-blue-900">#${p.number} — ${p.name}</span>
+            <span class="text-xs px-2 py-0.5 rounded font-semibold ${p.level === 'facil' ? 'bg-green-100 text-green-800' : p.level === 'medio' ? 'bg-yellow-100 text-yellow-800' : p.level === 'dificil' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}">${p.level.toUpperCase()}</span>
+            ${p.seed ? `<span class="text-[10px] bg-slate-100 text-slate-700 border border-slate-300 px-1.5 py-0.5 rounded font-mono">🌱 ${p.seed}</span>` : ''}
+          </div>
+          <div class="text-xs text-gray-500 mt-1">
+            Estado: ${p.isSolved ? '✅ Resuelto' : '⏳ Pendiente'} ${p.bestTime ? `| Récord: ${this.formatTime(p.bestTime)}` : ''} ${p.createdAt ? `| Guardado: ${p.createdAt}` : ''}
+          </div>
         </div>
-        <button class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700">Cargar</button>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded cursor-pointer transition shadow-xs" data-action="load">Cargar</button>
+          ${!isDefault ? `<button class="px-2 py-1 text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs rounded transition cursor-pointer" title="Eliminar este Sudoku guardado" data-action="delete">🗑️</button>` : ''}
+        </div>
       `;
 
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        const delBtn = e.target.closest('[data-action="delete"]');
+        if (delBtn) {
+          e.stopPropagation();
+          if (confirm(`¿Seguro que deseas eliminar "#${p.number} — ${p.name}" de tu colección?`)) {
+            this.storage.deletePuzzle(p.id);
+            this.updateSearchResults();
+            this.setStatus(`Sudoku #${p.number} eliminado de tu colección.`, 'info');
+          }
+          return;
+        }
+
         this.loadPuzzle(p.id);
         this.closeSearchModal();
       });
@@ -855,7 +920,64 @@ class SudokuApp {
   }
 
   /**
-   * Maneja la proposición de una semilla introducida por el usuario
+   * Interpreta cadenas de 81 caracteres numéricos o puntos como tableros completos
+   */
+  parseBoardString(raw) {
+    if (typeof raw !== 'string') return null;
+    const clean = raw.trim().replace(/[\s\r\n]/g, '');
+    if (clean.length === 81 && /^[0-9.]+$/.test(clean)) {
+      const grid = [];
+      for (let r = 0; r < 9; r++) {
+        const row = [];
+        for (let c = 0; c < 9; c++) {
+          const char = clean[r * 9 + c];
+          const val = (char === '.' || char === '0') ? 0 : parseInt(char, 10);
+          row.push(val);
+        }
+        grid.push(row);
+      }
+      return grid;
+    }
+    return null;
+  }
+
+  /**
+   * Carga un Sudoku tanto si el usuario introduce una semilla como una cadena de 81 caracteres
+   */
+  loadPuzzleBySeedOrString(raw, difficulty = this.currentLevel) {
+    const board81 = this.parseBoardString(raw);
+    if (board81) {
+      this.stopTimer();
+      this.mode = 'idle';
+      this.currentSeed = null;
+      this.currentBoardString = raw.trim();
+      this.currentLevel = difficulty;
+
+      const nextNum = this.storage.getNextNumberForLevel(this.currentLevel);
+      this.currentPuzzleId = `str81_${Date.now()}`;
+      this.currentNumber = nextNum;
+      this.dom.puzzleNumberInput.value = nextNum;
+
+      this.initialGrid = this.engine.cloneGrid(board81);
+      this.playGrid = this.engine.cloneGrid(board81);
+      const res = this.engine.solve(board81);
+      this.solutionGrid = res.solved ? this.engine.cloneGrid(res.solution) : null;
+      this.showPossibilities = false;
+
+      this.dom.startDateInput.value = '';
+      this.dom.elapsedTimeInput.value = '00:00';
+      if (this.dom.seedInput) this.dom.seedInput.value = raw.substring(0, 12) + '...';
+
+      this.setStatus(`Cadena de 81 caracteres cargada (${difficulty.toUpperCase()}). Asignado nº ${nextNum} en colección. Pulsa "Iniciar" para jugar o "Grabar" para guardarlo.`, 'success');
+      this.updateBoardDisplay();
+      return;
+    }
+
+    this.loadPuzzleBySeed(raw, difficulty);
+  }
+
+  /**
+   * Maneja la proposición de una semilla o cadena introducida por el usuario
    */
   handleProposeSeed() {
     const raw = this.dom.seedInput?.value.trim();
@@ -863,7 +985,7 @@ class SudokuApp {
       this.handleRandomSeed();
       return;
     }
-    this.loadPuzzleBySeed(raw, this.currentLevel);
+    this.loadPuzzleBySeedOrString(raw, this.currentLevel);
   }
 
   /**
@@ -874,11 +996,11 @@ class SudokuApp {
     if (this.dom.seedInput) {
       this.dom.seedInput.value = newSeed;
     }
-    this.loadPuzzleBySeed(newSeed, this.currentLevel);
+    this.loadPuzzleBySeedOrString(newSeed, this.currentLevel);
   }
 
   /**
-   * Carga una semilla propuesta desde el modal de búsqueda
+   * Carga una semilla o cadena propuesta desde el modal de búsqueda
    */
   handleModalProposeSeed() {
     const raw = this.dom.modalSeedInput?.value.trim();
@@ -887,7 +1009,7 @@ class SudokuApp {
     if (this.dom.seedInput) {
       this.dom.seedInput.value = raw;
     }
-    this.loadPuzzleBySeed(raw, this.currentLevel);
+    this.loadPuzzleBySeedOrString(raw, this.currentLevel);
   }
 
   /**
@@ -897,8 +1019,13 @@ class SudokuApp {
     this.stopTimer();
     this.mode = 'idle';
     this.currentSeed = seed;
+    this.currentBoardString = null;
     this.currentLevel = difficulty;
+    
+    const nextNum = this.storage.getNextNumberForLevel(this.currentLevel);
     this.currentPuzzleId = `seed_${seed}_${difficulty}`;
+    this.currentNumber = nextNum;
+    this.dom.puzzleNumberInput.value = nextNum;
 
     // Actualizar radios en UI
     const radio = document.querySelector(`input[name="nivel"][value="${difficulty}"]`);
