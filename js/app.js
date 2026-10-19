@@ -1,5 +1,6 @@
 import { SudokuEngine } from './sudoku-engine.js';
 import { SudokuStorage } from './sudoku-storage.js';
+import { SudokuOCR } from './sudoku-ocr.js';
 
 class SudokuApp {
   constructor() {
@@ -11,6 +12,13 @@ class SudokuApp {
     this.currentLevel = 'facil';
     this.currentNumber = 2;
     this.currentPuzzleId = 'facil_2';
+
+    // Motor de Visión OCR
+    this.ocr = new SudokuOCR();
+    this.ocrGrid = null;
+    this.ocrWarpedCanvas = null;
+    this.ocrSelectedRow = 0;
+    this.ocrSelectedCol = 0;
 
     // Tableros
     this.initialGrid = this.engine.createEmptyGrid();
@@ -116,7 +124,30 @@ class SudokuApp {
       btnConfirmNo: document.getElementById('btn-confirm-no'),
 
       // Teclado numérico táctil móvil
-      keypad: document.getElementById('touch-keypad')
+      keypad: document.getElementById('touch-keypad'),
+
+      // Módulo OCR e Importación por Imagen
+      btnScanPhoto: document.getElementById('btn-scan-photo'),
+      ocrModal: document.getElementById('ocr-modal'),
+      btnCloseOcr: document.getElementById('btn-close-ocr'),
+      ocrCameraInput: document.getElementById('ocr-camera-input'),
+      ocrFileInput: document.getElementById('ocr-file-input'),
+      ocrDropZone: document.getElementById('ocr-drop-zone'),
+      btnOcrSample: document.getElementById('btn-ocr-sample'),
+      ocrStepUpload: document.getElementById('ocr-step-upload'),
+      ocrStepProcessing: document.getElementById('ocr-step-processing'),
+      ocrStepReview: document.getElementById('ocr-step-review'),
+      ocrProgressBar: document.getElementById('ocr-progress-bar'),
+      ocrProgressTitle: document.getElementById('ocr-progress-title'),
+      ocrProgressDesc: document.getElementById('ocr-progress-desc'),
+      ocrPreviewCanvas: document.getElementById('ocr-preview-canvas'),
+      ocrGridBoard: document.getElementById('ocr-grid-board'),
+      ocrCluesCount: document.getElementById('ocr-clues-count'),
+      ocrValidationBadge: document.getElementById('ocr-validation-badge'),
+      ocrValidationText: document.getElementById('ocr-validation-text'),
+      btnOcrRescan: document.getElementById('btn-ocr-rescan'),
+      btnOcrLoadBoard: document.getElementById('btn-ocr-load-board'),
+      btnOcrLoadAndSave: document.getElementById('btn-ocr-load-and-save')
     };
 
     // Sincronizar radio del criterio de rechazo guardado
@@ -143,6 +174,62 @@ class SudokuApp {
     this.dom.btnPosiblesMirror?.addEventListener('click', () => this.togglePosibles());
     this.dom.btnReiniciar.addEventListener('click', () => this.handleReiniciar());
     this.dom.btnCerrar.addEventListener('click', () => this.handleCerrar());
+
+    // Módulo OCR desde Imagen o Cámara
+    this.dom.btnScanPhoto?.addEventListener('click', () => this.openOcrModal());
+    this.dom.btnCloseOcr?.addEventListener('click', () => this.closeOcrModal());
+    this.dom.ocrCameraInput?.addEventListener('change', (e) => this.handleOcrInputFiles(e.target.files));
+    this.dom.ocrFileInput?.addEventListener('change', (e) => this.handleOcrInputFiles(e.target.files));
+    this.dom.ocrDropZone?.addEventListener('click', () => this.dom.ocrFileInput?.click());
+    this.dom.btnOcrSample?.addEventListener('click', () => this.handleOcrSample());
+    this.dom.btnOcrRescan?.addEventListener('click', () => this.resetOcrModal());
+    this.dom.btnOcrLoadBoard?.addEventListener('click', () => this.applyOcrGridToBoard(false));
+    this.dom.btnOcrLoadAndSave?.addEventListener('click', () => this.applyOcrGridToBoard(true));
+
+    // Drag & Drop en zona de subida OCR
+    if (this.dom.ocrDropZone) {
+      this.dom.ocrDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        this.dom.ocrDropZone.classList.add('bg-blue-100', 'border-blue-400');
+      });
+      this.dom.ocrDropZone.addEventListener('dragleave', () => {
+        this.dom.ocrDropZone.classList.remove('bg-blue-100', 'border-blue-400');
+      });
+      this.dom.ocrDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        this.dom.ocrDropZone.classList.remove('bg-blue-100', 'border-blue-400');
+        if (e.dataTransfer && e.dataTransfer.files) {
+          this.handleOcrInputFiles(e.dataTransfer.files);
+        }
+      });
+    }
+
+    // Soporte para pegar imágenes del portapapeles (Ctrl + V)
+    window.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            this.openOcrModal();
+            this.processOcrImage(file);
+            break;
+          }
+        }
+      }
+    });
+
+    // Teclado numérico táctil de corrección OCR
+    const ocrKeys = document.querySelectorAll('.ocr-key');
+    ocrKeys.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.ocrVal, 10);
+        if (!isNaN(val) && val >= 0 && val <= 9) {
+          this.setOcrCellValue(this.ocrSelectedRow, this.ocrSelectedCol, val);
+        }
+      });
+    });
 
     // Semilla propuesta
     this.dom.btnLoadSeed?.addEventListener('click', () => this.handleProposeSeed());
@@ -525,6 +612,49 @@ class SudokuApp {
   }
 
   handlePhysicalKeyboard(e) {
+    // Manejo de teclado dentro del Modal OCR (Revisión interactiva)
+    if (this.dom.ocrModal && !this.dom.ocrModal.classList.contains('hidden')) {
+      if (e.key === 'Escape') {
+        this.closeOcrModal();
+        return;
+      }
+      if (this.dom.ocrStepReview && !this.dom.ocrStepReview.classList.contains('hidden')) {
+        if (e.key >= '1' && e.key <= '9') {
+          this.setOcrCellValue(this.ocrSelectedRow, this.ocrSelectedCol, parseInt(e.key, 10));
+          return;
+        }
+        if (e.key === '0' || e.key === 'Delete' || e.key === 'Backspace') {
+          this.setOcrCellValue(this.ocrSelectedRow, this.ocrSelectedCol, 0);
+          return;
+        }
+        if (e.key === 'ArrowUp') {
+          this.ocrSelectedRow = Math.max(0, this.ocrSelectedRow - 1);
+          this.renderOcrReviewBoard();
+          e.preventDefault();
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          this.ocrSelectedRow = Math.min(8, this.ocrSelectedRow + 1);
+          this.renderOcrReviewBoard();
+          e.preventDefault();
+          return;
+        }
+        if (e.key === 'ArrowLeft') {
+          this.ocrSelectedCol = Math.max(0, this.ocrSelectedCol - 1);
+          this.renderOcrReviewBoard();
+          e.preventDefault();
+          return;
+        }
+        if (e.key === 'ArrowRight') {
+          this.ocrSelectedCol = Math.min(8, this.ocrSelectedCol + 1);
+          this.renderOcrReviewBoard();
+          e.preventDefault();
+          return;
+        }
+      }
+      return;
+    }
+
     // Si hay un modal abierto, no interceptar
     if (!this.dom.searchModal.classList.contains('hidden') || !this.dom.confirmModal.classList.contains('hidden')) {
       return;
@@ -1127,6 +1257,256 @@ class SudokuApp {
     this.setStatus(`🌱 Semilla "${seed}" cargada (${difficulty.toUpperCase()} — ${game.initialClues} pistas iniciales). Pulsa "Iniciar" para comenzar.`, 'success');
     this.updateBoardDisplay();
   }
+
+  // ==========================================
+  // MÓDULO DE ESCANEO OCR E IMPORTACIÓN DE IMAGEN
+  // ==========================================
+
+  openOcrModal() {
+    if (this.dom.ocrModal) {
+      this.dom.ocrModal.classList.remove('hidden');
+      this.resetOcrModal();
+    }
+  }
+
+  closeOcrModal() {
+    if (this.dom.ocrModal) {
+      this.dom.ocrModal.classList.add('hidden');
+    }
+  }
+
+  resetOcrModal() {
+    if (this.dom.ocrStepUpload) this.dom.ocrStepUpload.classList.remove('hidden');
+    if (this.dom.ocrStepProcessing) this.dom.ocrStepProcessing.classList.add('hidden');
+    if (this.dom.ocrStepReview) this.dom.ocrStepReview.classList.add('hidden');
+    this.updateOcrProgress(0, '');
+  }
+
+  updateOcrProgress(percent, message) {
+    if (this.dom.ocrProgressBar) {
+      this.dom.ocrProgressBar.style.width = `${percent}%`;
+    }
+    if (this.dom.ocrProgressDesc && message) {
+      this.dom.ocrProgressDesc.textContent = message;
+    }
+  }
+
+  async handleOcrInputFiles(files) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file.type || !file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido (PNG, JPG, WebP).');
+      return;
+    }
+    await this.processOcrImage(file);
+  }
+
+  async handleOcrSample() {
+    const sampleCanvas = this.ocr.generateSampleSudokuCanvas();
+    await this.processOcrImage(sampleCanvas);
+  }
+
+  async processOcrImage(imageSource) {
+    if (this.dom.ocrStepUpload) this.dom.ocrStepUpload.classList.add('hidden');
+    if (this.dom.ocrStepProcessing) this.dom.ocrStepProcessing.classList.remove('hidden');
+    if (this.dom.ocrStepReview) this.dom.ocrStepReview.classList.add('hidden');
+
+    try {
+      this.updateOcrProgress(15, 'Cargando y optimizando imagen...');
+      const canvas = await this.ocr.loadImageToCanvas(imageSource);
+
+      this.updateOcrProgress(25, 'Detectando cuadrícula y alineando perspectiva...');
+      const corners = this.ocr.detectGridCorners(canvas);
+      const warped = this.ocr.warpPerspective(canvas, corners, 450);
+      this.ocrWarpedCanvas = warped;
+
+      this.updateOcrProgress(35, 'Extrayendo 81 casillas y reconociendo números...');
+      const { grid } = await this.ocr.recognizeGrid(warped, (p, msg) => {
+        this.updateOcrProgress(p, msg);
+      });
+
+      this.ocrGrid = grid;
+      this.showOcrReviewStep();
+    } catch (e) {
+      console.error('Error durante el escaneo OCR:', e);
+      alert('Ocurrió un error al procesar la imagen: ' + (e.message || e));
+      this.resetOcrModal();
+    }
+  }
+
+  showOcrReviewStep() {
+    if (this.dom.ocrStepUpload) this.dom.ocrStepUpload.classList.add('hidden');
+    if (this.dom.ocrStepProcessing) this.dom.ocrStepProcessing.classList.add('hidden');
+    if (this.dom.ocrStepReview) this.dom.ocrStepReview.classList.remove('hidden');
+
+    // Dibujar preview de la foto procesada
+    if (this.dom.ocrPreviewCanvas && this.ocrWarpedCanvas) {
+      this.dom.ocrPreviewCanvas.width = this.ocrWarpedCanvas.width;
+      this.dom.ocrPreviewCanvas.height = this.ocrWarpedCanvas.height;
+      const ctx = this.dom.ocrPreviewCanvas.getContext('2d');
+      ctx.drawImage(this.ocrWarpedCanvas, 0, 0);
+    }
+
+    this.ocrSelectedRow = 0;
+    this.ocrSelectedCol = 0;
+    this.renderOcrReviewBoard();
+    this.validateOcrGrid();
+  }
+
+  renderOcrReviewBoard() {
+    if (!this.dom.ocrGridBoard || !this.ocrGrid) return;
+    this.dom.ocrGridBoard.innerHTML = '';
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const val = this.ocrGrid[r][c];
+        const cell = document.createElement('div');
+        cell.className = 'sudoku-cell';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.style.fontSize = '14px';
+        cell.style.cursor = 'pointer';
+
+        if (r === this.ocrSelectedRow && c === this.ocrSelectedCol) {
+          cell.classList.add('selected');
+        }
+
+        if (val !== 0) {
+          cell.textContent = String(val);
+          cell.classList.add('initial');
+          if (!this.engine.isValidMove(this.ocrGrid, r, c, val)) {
+            cell.classList.add('cell-error');
+          }
+        }
+
+        cell.addEventListener('click', () => {
+          this.ocrSelectedRow = r;
+          this.ocrSelectedCol = c;
+          this.renderOcrReviewBoard();
+        });
+
+        this.dom.ocrGridBoard.appendChild(cell);
+      }
+    }
+  }
+
+  setOcrCellValue(row, col, num) {
+    if (!this.ocrGrid) return;
+    this.ocrGrid[row][col] = num;
+    this.renderOcrReviewBoard();
+    this.validateOcrGrid();
+
+    // Auto-avance inteligente al escribir un número
+    if (num > 0) {
+      if (col < 8) {
+        this.ocrSelectedCol = col + 1;
+      } else if (row < 8) {
+        this.ocrSelectedRow = row + 1;
+        this.ocrSelectedCol = 0;
+      }
+      this.renderOcrReviewBoard();
+    }
+  }
+
+  validateOcrGrid() {
+    if (!this.ocrGrid) return;
+
+    let clues = 0;
+    let hasCollisions = false;
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const val = this.ocrGrid[r][c];
+        if (val !== 0) {
+          clues++;
+          if (!this.engine.isValidMove(this.ocrGrid, r, c, val)) {
+            hasCollisions = true;
+          }
+        }
+      }
+    }
+
+    if (this.dom.ocrCluesCount) {
+      this.dom.ocrCluesCount.textContent = `${clues} pistas detectadas`;
+    }
+
+    const badge = this.dom.ocrValidationBadge;
+    const text = this.dom.ocrValidationText;
+    if (!badge || !text) return;
+
+    if (hasCollisions) {
+      badge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1';
+      text.textContent = '⚠️ Números repetidos en fila/col/caja';
+      return;
+    }
+
+    if (clues < 17) {
+      badge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1';
+      text.textContent = `ℹ️ ${clues} pistas (mínimo 17)`;
+      return;
+    }
+
+    // Resolver con motor de backtracking
+    const solveRes = this.engine.solve(this.ocrGrid);
+    if (solveRes.solved) {
+      badge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1';
+      text.textContent = `✅ Solución matemática válida (${clues} pistas)`;
+    } else {
+      badge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1';
+      text.textContent = '❌ Sin solución matemática. Revisa algún número';
+    }
+  }
+
+  applyOcrGridToBoard(andSave = false) {
+    if (!this.ocrGrid) return;
+
+    const res = this.engine.solve(this.ocrGrid);
+    if (!res.solved) {
+      if (!confirm('Este planteamiento parece no tener solución matemática única. ¿Deseas cargarlo de todos modos?')) {
+        return;
+      }
+    }
+
+    let clues = 0;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        if (this.ocrGrid[r][c] !== 0) clues++;
+      }
+    }
+
+    // Cargar en el tablero
+    this.initialGrid = this.engine.cloneGrid(this.ocrGrid);
+    this.playGrid = this.engine.cloneGrid(this.ocrGrid);
+    this.solutionGrid = res.solved ? this.engine.cloneGrid(res.solution) : null;
+    this.mode = 'idle';
+    this.showPossibilities = false;
+
+    // Asignar siguiente número libre en colección
+    const nextNum = this.storage.getNextNumberForLevel(this.currentLevel);
+    this.dom.puzzleNumberInput.value = nextNum;
+    this.currentNumber = nextNum;
+    this.currentPuzzleId = `ocr_${Date.now()}`;
+    this.currentSeed = null;
+
+    if (this.dom.seedInput) this.dom.seedInput.value = 'Foto-OCR';
+
+    this.dom.startDateInput.value = '';
+    this.dom.elapsedTimeInput.value = '00:00';
+
+    if (andSave) {
+      const name = `Sudoku Escaneado #${nextNum}`;
+      this.storage.savePuzzle(this.currentLevel, nextNum, this.initialGrid, name, 'Foto-OCR');
+      this.currentPuzzleId = `${this.currentLevel}_${nextNum}`;
+      this.dom.puzzleNumberInput.value = this.storage.getNextNumberForLevel(this.currentLevel);
+      this.setStatus(`📷 Sudoku escaneado y grabado en colección como "${name}" (${clues} pistas). Pulsa "Iniciar" para resolver.`, 'success');
+    } else {
+      this.setStatus(`📷 Sudoku importado desde imagen con éxito (${clues} pistas). Pulsa "Iniciar" para jugar o "Posibles" para ver candidatos.`, 'success');
+    }
+
+    this.closeOcrModal();
+    this.updateBoardDisplay();
+  }
+
 }
 
 // Inicializar al cargar el DOM
