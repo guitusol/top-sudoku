@@ -32,10 +32,25 @@ class SudokuApp {
 
     this.initDOM();
     this.bindEvents();
+    this.currentSeed = null;
     this.startAnalogClock();
 
-    // Cargar Sudoku inicial por defecto (el clásico FoxPro #2)
-    this.loadPuzzle('facil_2');
+    // Comprobar si la URL trae semilla o nivel especificado (?semilla=... o ?seed=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlSeed = urlParams.get('semilla') || urlParams.get('seed');
+    const urlNivel = urlParams.get('nivel') || urlParams.get('level');
+    if (urlNivel && ['facil', 'medio', 'dificil', 'endemoniado'].includes(urlNivel.toLowerCase())) {
+      this.currentLevel = urlNivel.toLowerCase();
+      const radio = document.querySelector(`input[name="nivel"][value="${this.currentLevel}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    if (urlSeed) {
+      this.loadPuzzleBySeed(urlSeed, this.currentLevel);
+    } else {
+      // Cargar Sudoku inicial por defecto (el clásico FoxPro #2)
+      this.loadPuzzle('facil_2');
+    }
   }
 
   initDOM() {
@@ -68,6 +83,13 @@ class SudokuApp {
       btnPosibles: document.getElementById('btn-posibles'),
       btnReiniciar: document.getElementById('btn-reiniciar'),
       btnVerSolucion: document.getElementById('btn-ver-solucion'),
+
+      // Semilla propuesta
+      seedInput: document.getElementById('seed-input'),
+      btnLoadSeed: document.getElementById('btn-load-seed'),
+      btnRandomSeed: document.getElementById('btn-random-seed'),
+      modalSeedInput: document.getElementById('modal-seed-input'),
+      btnModalLoadSeed: document.getElementById('btn-modal-load-seed'),
 
       // Niveles y número
       levelRadios: document.querySelectorAll('input[name="nivel"]'),
@@ -110,12 +132,25 @@ class SudokuApp {
     this.dom.btnReiniciar.addEventListener('click', () => this.handleReiniciar());
     this.dom.btnCerrar.addEventListener('click', () => this.handleCerrar());
 
+    // Semilla propuesta
+    this.dom.btnLoadSeed?.addEventListener('click', () => this.handleProposeSeed());
+    this.dom.seedInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this.handleProposeSeed();
+    });
+    this.dom.btnRandomSeed?.addEventListener('click', () => this.handleRandomSeed());
+    this.dom.btnModalLoadSeed?.addEventListener('click', () => this.handleModalProposeSeed());
+    this.dom.modalSeedInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this.handleModalProposeSeed();
+    });
+
     // Niveles radio buttons y número
     this.dom.levelRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
         this.currentLevel = e.target.value;
         if (this.mode === 'plantear') {
           this.dom.puzzleNumberInput.value = this.storage.getNextNumberForLevel(this.currentLevel);
+        } else if (this.currentSeed) {
+          this.loadPuzzleBySeed(this.currentSeed, this.currentLevel);
         } else {
           this.loadPuzzleByLevelAndNumber(this.currentLevel, parseInt(this.dom.puzzleNumberInput.value, 10) || 1);
         }
@@ -450,7 +485,10 @@ class SudokuApp {
     }
 
     const num = parseInt(this.dom.puzzleNumberInput.value, 10) || 1;
-    const puzzle = this.storage.savePuzzle(this.currentLevel, num, this.initialGrid);
+    const customName = this.currentSeed
+      ? `Sudoku Semilla #${this.currentSeed} (${this.currentLevel.toUpperCase()})`
+      : '';
+    const puzzle = this.storage.savePuzzle(this.currentLevel, num, this.initialGrid, customName);
     this.currentPuzzleId = puzzle.id;
     this.setStatus(`Sudoku grabado con éxito en nivel "${this.currentLevel.toUpperCase()}" con el número ${num}.`, 'success');
   }
@@ -507,6 +545,8 @@ class SudokuApp {
 
     this.stopTimer();
     this.mode = 'idle';
+    this.currentSeed = null;
+    if (this.dom.seedInput) this.dom.seedInput.value = '';
     this.currentPuzzleId = puzzle.id;
     this.currentLevel = puzzle.level;
     this.currentNumber = puzzle.number;
@@ -612,15 +652,22 @@ class SudokuApp {
    */
   handleResolver() {
     this.openConfirmModal('¿Verdaderamente deseas resolver el Sudoku y ver la solución completa?', () => {
-      const result = this.engine.solve(this.initialGrid);
-      if (result.solved) {
-        this.stopTimer();
-        this.mode = 'resuelto';
-        this.playGrid = this.engine.cloneGrid(result.solution);
+      this.stopTimer();
+      this.mode = 'resuelto';
+
+      if (this.solutionGrid) {
+        this.playGrid = this.engine.cloneGrid(this.solutionGrid);
         this.updateBoardDisplay();
-        this.setStatus('Sudoku resuelto con el motor matemático MRV.', 'success');
+        this.setStatus('Sudoku resuelto con la solución matemática exacta de la semilla.', 'success');
       } else {
-        alert('No se ha encontrado una solución matemáticamente válida para esta distribución.');
+        const result = this.engine.solve(this.initialGrid);
+        if (result.solved) {
+          this.playGrid = this.engine.cloneGrid(result.solution);
+          this.updateBoardDisplay();
+          this.setStatus('Sudoku resuelto con el motor matemático MRV.', 'success');
+        } else {
+          alert('No se ha encontrado una solución matemáticamente válida para esta distribución.');
+        }
       }
     });
   }
@@ -744,6 +791,86 @@ class SudokuApp {
     } else {
       this.dom.statusBadge.classList.add('bg-blue-100', 'text-blue-800', 'border', 'border-blue-200');
     }
+  }
+
+  /**
+   * Maneja la proposición de una semilla introducida por el usuario
+   */
+  handleProposeSeed() {
+    const raw = this.dom.seedInput?.value.trim();
+    if (!raw) {
+      this.handleRandomSeed();
+      return;
+    }
+    this.loadPuzzleBySeed(raw, this.currentLevel);
+  }
+
+  /**
+   * Genera y propone una semilla pseudo-aleatoria nueva (🎲)
+   */
+  handleRandomSeed() {
+    const newSeed = Math.floor(10000 + Math.random() * 90000);
+    if (this.dom.seedInput) {
+      this.dom.seedInput.value = newSeed;
+    }
+    this.loadPuzzleBySeed(newSeed, this.currentLevel);
+  }
+
+  /**
+   * Carga una semilla propuesta desde el modal de búsqueda
+   */
+  handleModalProposeSeed() {
+    const raw = this.dom.modalSeedInput?.value.trim();
+    if (!raw) return;
+    this.closeSearchModal();
+    if (this.dom.seedInput) {
+      this.dom.seedInput.value = raw;
+    }
+    this.loadPuzzleBySeed(raw, this.currentLevel);
+  }
+
+  /**
+   * Genera y carga el Sudoku matemático correspondiente a la semilla y dificultad dadas
+   */
+  loadPuzzleBySeed(seed, difficulty = this.currentLevel) {
+    this.stopTimer();
+    this.mode = 'idle';
+    this.currentSeed = seed;
+    this.currentLevel = difficulty;
+    this.currentPuzzleId = `seed_${seed}_${difficulty}`;
+
+    // Actualizar radios en UI
+    const radio = document.querySelector(`input[name="nivel"][value="${difficulty}"]`);
+    if (radio) radio.checked = true;
+
+    // Generar puzzle matemático con solución única garantizada
+    const game = this.engine.generateGame(difficulty, seed);
+    this.initialGrid = this.engine.cloneGrid(game.board);
+    this.playGrid = this.engine.cloneGrid(game.board);
+    this.solutionGrid = this.engine.cloneGrid(game.solution);
+    this.showPossibilities = false;
+
+    this.dom.startDateInput.value = '';
+    this.dom.elapsedTimeInput.value = '00:00';
+    if (this.dom.seedInput) {
+      this.dom.seedInput.value = seed;
+    }
+    if (this.dom.modalSeedInput) {
+      this.dom.modalSeedInput.value = seed;
+    }
+
+    // Sincronizar URL sin recargar la página
+    if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('semilla', seed);
+        url.searchParams.set('nivel', difficulty);
+        window.history.replaceState({ semilla: seed, nivel: difficulty }, '', url.toString());
+      } catch (e) {}
+    }
+
+    this.setStatus(`🌱 Semilla "${seed}" cargada (${difficulty.toUpperCase()} — ${game.initialClues} pistas iniciales). Pulsa "Iniciar" para comenzar.`, 'success');
+    this.updateBoardDisplay();
   }
 }
 

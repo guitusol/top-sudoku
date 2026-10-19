@@ -136,3 +136,21 @@ Si te encuentras bloqueado o deseas comprobar si un sudoku propio tiene solució
 ---
 
 *Top-Sudoku © 2026. Diseñado y desarrollado por Guillermo Tudela Soler / Conectividad y Comunicaciones, S.L.*
+
+
+---
+
+## 8. Generador Universal por Semilla
+
+Además de los sudokus precargados en la colección, puedes **proponer cualquier semilla matemática** (número o palabra) para generar un Sudoku único con solución garantizada:
+- **Proponer una semilla**: Escribe tu número o texto en la casilla `🌱 Semilla` y pulsa **Cargar** (o presiona Intro).
+- **Botón Aleatorio (🎲)**: Genera una nueva semilla al azar.
+- **Compartir el mismo Sudoku**: La URL se sincroniza automáticamente (ej. `?semilla=40837&nivel=facil`). Comparte el enlace con tus amigos para retarse sobre el mismo tablero.
+
+---
+
+### Créditos y Dedicatoria
+
+**Desarrollado por Guillermo Tudela**  
+*Director de CONECTIVIDAD Y COMUNICACIONES, S. L.*  
+*Esta APP está dedicada a mi familia, amigos y a todos los apasionados por los Rompecabezas y Sudokus.*
