@@ -81,6 +81,7 @@ class SudokuApp {
       btnResolver: document.getElementById('btn-resolver'),
       btnCancelar: document.getElementById('btn-cancelar'),
       btnPosibles: document.getElementById('btn-posibles'),
+      btnPosiblesMirror: document.getElementById('btn-posibles-mirror'),
       btnReiniciar: document.getElementById('btn-reiniciar'),
       btnVerSolucion: document.getElementById('btn-ver-solucion'),
 
@@ -129,6 +130,7 @@ class SudokuApp {
     this.dom.btnVerSolucion.addEventListener('click', () => this.handleResolver());
     this.dom.btnCancelar.addEventListener('click', () => this.handleCancelar());
     this.dom.btnPosibles.addEventListener('click', () => this.togglePosibles());
+    this.dom.btnPosiblesMirror?.addEventListener('click', () => this.togglePosibles());
     this.dom.btnReiniciar.addEventListener('click', () => this.handleReiniciar());
     this.dom.btnCerrar.addEventListener('click', () => this.handleCerrar());
 
@@ -641,12 +643,30 @@ class SudokuApp {
   }
 
   /**
-   * 8.- Botón Posibles: Alterna la visualización de candidatos en la pantalla derecha
+   * 8.- Botón Posibles: Alterna la visualización de candidatos y despliega la pantalla espejo directamente
    */
-  togglePosibles() {
-    this.showPossibilities = !this.showPossibilities;
-    this.dom.btnPosibles.classList.toggle('bg-amber-100', this.showPossibilities);
-    this.dom.btnPosibles.classList.toggle('border-amber-500', this.showPossibilities);
+  togglePosibles(forceState = null) {
+    if (forceState !== null) {
+      this.showPossibilities = forceState;
+    } else {
+      this.showPossibilities = !this.showPossibilities;
+    }
+
+    const btns = [this.dom.btnPosibles, this.dom.btnPosiblesMirror];
+    btns.forEach(btn => {
+      if (btn) {
+        btn.classList.toggle('bg-amber-300', this.showPossibilities);
+        btn.classList.toggle('border-amber-500', this.showPossibilities);
+        btn.classList.toggle('ring-2', this.showPossibilities);
+        btn.classList.toggle('ring-amber-400', this.showPossibilities);
+      }
+    });
+
+    // En pantallas estrechas o móviles, desplegar directamente la pestaña de la pantalla espejo
+    if (this.showPossibilities && window.innerWidth < 1024) {
+      this.switchMobileTab('possibilities');
+    }
+
     this.updateRightBoardDisplay();
 
     if (this.showPossibilities) {
@@ -654,8 +674,10 @@ class SudokuApp {
       if (singles.length > 0) {
         this.setStatus(`Calculadas posibilidades: ¡Hay ${singles.length} casilla(s) con candidato único (resaltadas en amarillo)!`, 'info');
       } else {
-        this.setStatus('Calculadas posibilidades por cuadro en tiempo real.', 'info');
+        this.setStatus('Calculadas posibilidades por cuadro en tiempo real en la pantalla espejo.', 'info');
       }
+    } else {
+      this.setStatus('Pantalla espejo en modo estándar.', 'info');
     }
   }
 
@@ -786,6 +808,11 @@ class SudokuApp {
       this.dom.tabPossibilities.classList.remove('bg-white', 'text-gray-700');
       this.dom.tabGame.classList.remove('bg-blue-600', 'text-white');
       this.dom.tabGame.classList.add('bg-white', 'text-gray-700');
+
+      // Al desplegar la pantalla espejo, activar los posibles directamente
+      if (!this.showPossibilities) {
+        this.togglePosibles(true);
+      }
     }
   }
 

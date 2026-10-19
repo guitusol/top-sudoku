@@ -182,12 +182,17 @@
           </div>
         </div>
 
-        <!-- Botón Ver Solución -->
-        <div class="flex items-center justify-between pt-2">
-          <button id="btn-ver-solucion" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
-            ver solución
-          </button>
-          <div class="text-[11px] text-slate-400 italic">
+        <!-- Botonera Pantalla Espejo (Posibles y Ver Solución) -->
+        <div class="flex items-center justify-between pt-2 flex-wrap gap-2">
+          <div class="flex items-center space-x-2">
+            <button id="btn-posibles-mirror" class="px-3.5 py-2 bg-amber-200 hover:bg-amber-300 text-amber-900 text-xs font-bold rounded border border-amber-400 shadow-sm active:translate-y-0.5 transition cursor-pointer flex items-center gap-1.5" title="Desplegar posibilidades y candidatos únicos en la pantalla espejo">
+              <span>🔍</span> posibles
+            </button>
+            <button id="btn-ver-solucion" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition cursor-pointer">
+              ver solución
+            </button>
+          </div>
+          <div class="text-[11px] text-slate-500 italic">
             El motor matemático calcula candidatos en tiempo real
           </div>
         </div>

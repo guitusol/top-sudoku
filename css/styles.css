@@ -22,19 +22,29 @@ body {
   color: #1e293b;
 }
 
-/* Tablero de Sudoku 9x9 */
+/* Tablero de Sudoku 9x9 con cuadricula matematicamente bloqueada 1:1 */
 .sudoku-grid {
   display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 460px;
   border: 3px solid var(--thick-border);
   background-color: var(--panel-bg);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   user-select: none;
+  box-sizing: border-box;
 }
 
 .sudoku-cell {
   position: relative;
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,10 +119,15 @@ body {
   75% { transform: translateX(3px); }
 }
 
-/* Casilla de Posibilidades (pantalla espejo derecha) */
+/* Casilla de Posibilidades (pantalla espejo derecha) con dimensiones inmutables */
 .possibility-cell {
   position: relative;
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,26 +156,32 @@ body {
   border-bottom: none;
 }
 
-/* Caja de candidatos (números posibles) */
+/* Caja de candidatos (números posibles) compacta y sin desborde */
 .candidate-box {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-wrap: wrap;
+  align-content: center;
   align-items: center;
   justify-content: center;
-  padding: 2px;
+  padding: 1px;
   text-align: center;
-  line-height: 1.1;
-  font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+  line-height: 1.15;
+  font-size: clamp(0.55rem, 1.05vw, 0.75rem);
   color: var(--candidate-color);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 1px;
+  overflow: hidden;
+  box-sizing: border-box;
+  word-break: break-all;
 }
 
-/* Resaltado especial para Candidato Único (Naked Single) */
+/* Resaltado especial para Candidato Único (Naked Single)
+   Usamos box-shadow inset para no desvirtuar jamas las lineas de la cuadricula */
 .possibility-cell.single-candidate {
   background-color: var(--naked-single) !important;
-  border: 1.5px dashed var(--naked-single-border) !important;
+  box-shadow: inset 0 0 0 2.5px var(--naked-single-border) !important;
   font-weight: 700;
   color: #854d0e;
 }
