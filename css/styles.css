@@ -1,0 +1,220 @@
+/* Estilos personalizados para la Escuela y Solucionador de Sudoku */
+
+:root {
+  --bg-app: #f4f6f9;
+  --panel-bg: #ffffff;
+  --border-color: #cbd5e1;
+  --thick-border: #1e293b;
+  --thin-border: #94a3b8;
+  --cell-initial: #1e3a8a;
+  --cell-user: #047857;
+  --cell-error: #ef4444;
+  --cell-selected: #dbeafe;
+  --cell-highlight: #f1f5f9;
+  --candidate-color: #475569;
+  --naked-single: #fef08a;
+  --naked-single-border: #ca8a04;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background-color: var(--bg-app);
+  color: #1e293b;
+}
+
+/* Tablero de Sudoku 9x9 */
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  border: 3px solid var(--thick-border);
+  background-color: var(--panel-bg);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  user-select: none;
+}
+
+.sudoku-cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--thin-border);
+  border-bottom: 1px solid var(--thin-border);
+  font-size: clamp(1rem, 2.8vw, 1.75rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Bordes gruesos cada 3 casillas (cajas 3x3) */
+.sudoku-cell:nth-child(3n) {
+  border-right: 2.5px solid var(--thick-border);
+}
+
+.sudoku-cell:nth-child(9n) {
+  border-right: none;
+}
+
+.sudoku-grid > div:nth-child(n+19):nth-child(-n+27),
+.sudoku-grid > div:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2.5px solid var(--thick-border);
+}
+
+.sudoku-grid > div:nth-child(n+73):nth-child(-n+81) {
+  border-bottom: none;
+}
+
+/* Estados de las casillas */
+.sudoku-cell.initial {
+  color: var(--cell-initial);
+  font-weight: 700;
+  background-color: #f8fafc;
+}
+
+.sudoku-cell.user-placed {
+  color: var(--cell-user);
+  font-weight: 600;
+}
+
+.sudoku-cell.selected {
+  background-color: var(--cell-selected) !important;
+  outline: 2px solid #3b82f6;
+  z-index: 10;
+}
+
+.sudoku-cell.highlight-axis {
+  background-color: #f8fafc;
+}
+
+.sudoku-cell.same-number {
+  background-color: #e0e7ff;
+}
+
+.sudoku-cell.cell-error {
+  background-color: #fee2e2 !important;
+  color: var(--cell-error);
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Casilla de Posibilidades (pantalla espejo derecha) */
+.possibility-cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--thin-border);
+  border-bottom: 1px solid var(--thin-border);
+  background-color: #ffffff;
+  font-size: clamp(0.9rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  user-select: none;
+}
+
+.possibility-cell:nth-child(3n) {
+  border-right: 2.5px solid var(--thick-border);
+}
+
+.possibility-cell:nth-child(9n) {
+  border-right: none;
+}
+
+.possibility-grid > div:nth-child(n+19):nth-child(-n+27),
+.possibility-grid > div:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2.5px solid var(--thick-border);
+}
+
+.possibility-grid > div:nth-child(n+73):nth-child(-n+81) {
+  border-bottom: none;
+}
+
+/* Caja de candidatos (números posibles) */
+.candidate-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  text-align: center;
+  line-height: 1.1;
+  font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+  color: var(--candidate-color);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* Resaltado especial para Candidato Único (Naked Single) */
+.possibility-cell.single-candidate {
+  background-color: var(--naked-single) !important;
+  border: 1.5px dashed var(--naked-single-border) !important;
+  font-weight: 700;
+  color: #854d0e;
+}
+
+/* Reloj analógico / digital estilo FoxPro */
+.analog-clock {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #93c5fd;
+  border: 2px solid #1e3a8a;
+  position: relative;
+}
+
+.analog-clock .hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  background-color: #1e293b;
+  border-radius: 2px;
+}
+
+.analog-clock .hour-hand {
+  width: 3px;
+  height: 16px;
+  margin-left: -1.5px;
+}
+
+.analog-clock .minute-hand {
+  width: 2px;
+  height: 22px;
+  margin-left: -1px;
+}
+
+.analog-clock .second-hand {
+  width: 1px;
+  height: 24px;
+  background-color: #dc2626;
+  margin-left: -0.5px;
+}
+
+.analog-clock .clock-center {
+  width: 6px;
+  height: 6px;
+  background-color: #1e3a8a;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -3px;
+  margin-left: -3px;
+}
+
+/* Teclado numérico táctil móvil */
+.keypad-btn {
+  touch-action: manipulation;
+  user-select: none;
+  transition: transform 0.05s active, background-color 0.15s ease;
+}
+
+.keypad-btn:active {
+  transform: scale(0.95);
+}

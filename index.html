@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Top-Sudoku — Escuela y Solucionador Lógico</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e293b">
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 antialiased flex flex-col items-center p-2 sm:p-4 md:p-6">
+
+  <!-- Contenedor Principal (Ventana de la aplicación estilo FoxPro Modernizado) -->
+  <div class="w-full max-w-6xl bg-white rounded-lg shadow-xl border border-slate-300 overflow-hidden flex flex-col">
+    
+    <!-- Barra de Título de la Ventana -->
+    <div class="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-4 py-2.5 flex items-center justify-between text-white select-none">
+      <div class="flex items-center space-x-2">
+        <span class="inline-block w-4 h-4 rounded bg-amber-400 text-slate-900 text-xs font-black text-center leading-4">3S</span>
+        <h1 class="font-bold text-sm tracking-wide">SUDOKU — Solucionador y Escuela de Lógica</h1>
+      </div>
+      <div class="flex items-center space-x-3 text-xs">
+        <a href="manual.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition" title="Manual del Usuario y Escuela Lógica"><span>📖</span><span>Manual</span></a>
+        <span id="status-badge" class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded">Listo</span>
+      </div>
+    </div>
+
+    <!-- Barra de Control Superior (Fechas, Cronómetro y Reloj Analógico estilo FoxPro) -->
+    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-700">
+        <div class="flex items-center space-x-2">
+          <span>Inicio partida:</span>
+          <input type="text" id="start-date-input" readonly 
+            class="bg-white border border-slate-300 rounded px-2.5 py-1 text-slate-800 font-mono text-xs w-44 shadow-inner" placeholder="Sin iniciar">
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <span>Tiempo transcurrido:</span>
+          <input type="text" id="elapsed-time-input" readonly 
+            class="bg-white border border-slate-300 rounded px-2.5 py-1 text-emerald-700 font-mono font-bold text-sm w-20 text-center shadow-inner" value="00:00">
+        </div>
+      </div>
+
+      <!-- Reloj Dual: Analógico y Digital -->
+      <div class="flex items-center space-x-3">
+        <div class="analog-clock shadow-md">
+          <div id="analog-hour" class="hand hour-hand"></div>
+          <div id="analog-minute" class="hand minute-hand"></div>
+          <div id="analog-second" class="hand second-hand"></div>
+          <div class="clock-center"></div>
+        </div>
+        <div id="digital-clock" class="font-mono text-xs font-bold text-slate-600 bg-white border border-slate-300 px-2 py-1 rounded shadow-inner">
+          --:--:--
+        </div>
+      </div>
+    </div>
+
+    <!-- Pestañas para Pantallas Pequeñas (Móvil Portrait) -->
+    <div class="flex lg:hidden bg-slate-200 p-1 border-b border-slate-300 text-xs font-semibold">
+      <button id="tab-game" class="flex-1 py-2 rounded bg-blue-600 text-white shadow-sm transition">
+        🎮 Tablero de Juego
+      </button>
+      <button id="tab-possibilities" class="flex-1 py-2 rounded bg-white text-slate-700 transition">
+        🔍 Posibilidades por Cuadro
+      </button>
+    </div>
+
+    <!-- Cuerpo Principal: Dos Tableros Lado a Lado (o conmutados en móvil) -->
+    <div class="p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+      
+      <!-- LADO IZQUIERDO: Planteamiento y Juego -->
+      <div id="left-panel" class="flex flex-col space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Planteamiento y Juego
+          </h2>
+          <span class="text-xs text-slate-400">Clic en casilla + Teclado 1-9</span>
+        </div>
+
+        <!-- Tablero 9x9 Izquierdo -->
+        <div class="max-w-[460px] mx-auto w-full">
+          <div id="left-board" class="sudoku-grid">
+            <!-- 81 casillas generadas por JS -->
+          </div>
+        </div>
+
+        <!-- Selector de Dificultad y Número (Fácil, Medio, Difícil, Endemoniado) -->
+        <div class="bg-slate-50 border border-slate-200 rounded p-3 text-xs flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center space-x-3 flex-wrap">
+            <span class="font-bold text-slate-700">Nivel:</span>
+            <label class="inline-flex items-center space-x-1 cursor-pointer">
+              <input type="radio" name="nivel" value="facil" checked class="text-blue-600 focus:ring-0">
+              <span class="text-slate-700">fácil</span>
+            </label>
+            <label class="inline-flex items-center space-x-1 cursor-pointer">
+              <input type="radio" name="nivel" value="medio" class="text-blue-600 focus:ring-0">
+              <span class="text-slate-700">medio</span>
+            </label>
+            <label class="inline-flex items-center space-x-1 cursor-pointer">
+              <input type="radio" name="nivel" value="dificil" class="text-blue-600 focus:ring-0">
+              <span class="text-slate-700">difícil</span>
+            </label>
+            <label class="inline-flex items-center space-x-1 cursor-pointer">
+              <input type="radio" name="nivel" value="endemoniado" class="text-blue-600 focus:ring-0">
+              <span class="text-slate-700">endemoniado</span>
+            </label>
+          </div>
+
+          <div class="flex items-center space-x-1.5">
+            <span class="font-bold text-slate-700">Número:</span>
+            <input type="number" id="puzzle-number-input" value="2" min="1" max="999" 
+              class="w-14 bg-white border border-slate-300 rounded px-2 py-0.5 text-center font-bold text-slate-800">
+          </div>
+        </div>
+
+        <!-- Botonera de Acciones (Estilo FoxPro) -->
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 text-xs font-semibold">
+          <button id="btn-plantear" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+            plantear
+          </button>
+          <button id="btn-grabar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+            grabar
+          </button>
+          <button id="btn-buscar" class="px-2 py-2 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded border border-blue-300 shadow-sm active:translate-y-0.5 transition font-bold">
+            buscar
+          </button>
+          <button id="btn-iniciar" class="px-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded border border-emerald-700 shadow-sm active:translate-y-0.5 transition font-bold">
+            iniciar
+          </button>
+          <button id="btn-posibles" class="px-2 py-2 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded border border-amber-400 shadow-sm active:translate-y-0.5 transition font-bold">
+            posibles
+          </button>
+          <button id="btn-resolver" class="px-2 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 rounded border border-indigo-300 shadow-sm active:translate-y-0.5 transition">
+            resolver
+          </button>
+          <button id="btn-reiniciar" class="px-2 py-2 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded border border-rose-300 shadow-sm active:translate-y-0.5 transition">
+            reiniciar
+          </button>
+          <button id="btn-cancelar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+            cancelar
+          </button>
+          <button id="btn-cerrar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+            cerrar
+          </button>
+        </div>
+      </div>
+
+      <!-- LADO DERECHO: Posibilidades por Cuadro (Pantalla Espejo y Tutor) -->
+      <div id="right-panel" class="hidden lg:flex flex-col space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center space-x-1.5">
+            <span>POSIBILIDADES POR CUADRO</span>
+            <span class="text-[10px] font-normal px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">Espejo / Asistente</span>
+          </h2>
+          <span class="text-xs text-amber-700 font-medium">Amarillo = Candidato Único</span>
+        </div>
+
+        <!-- Tablero 9x9 Derecho -->
+        <div class="max-w-[460px] mx-auto w-full">
+          <div id="right-board" class="sudoku-grid possibility-grid">
+            <!-- 81 casillas de posibilidades generadas por JS -->
+          </div>
+        </div>
+
+        <!-- Botón Ver Solución -->
+        <div class="flex items-center justify-between pt-2">
+          <button id="btn-ver-solucion" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+            ver solución
+          </button>
+          <div class="text-[11px] text-slate-400 italic">
+            El motor matemático calcula candidatos en tiempo real
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Teclado Numérico Táctil para Móvil / Tablet (Oculto en pantallas de ordenador y portátil con teclado físico) -->
+    <div id="touch-keypad" class="flex lg:hidden bg-slate-100 border-t border-slate-200 p-2.5 sm:p-3 flex-col items-center gap-2">
+      <!-- Fila 1: Números del 1 al 9 -->
+      <div class="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+        <button data-val="1" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">1</button>
+        <button data-val="2" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">2</button>
+        <button data-val="3" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">3</button>
+        <button data-val="4" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">4</button>
+        <button data-val="5" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">5</button>
+        <button data-val="6" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">6</button>
+        <button data-val="7" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">7</button>
+        <button data-val="8" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">8</button>
+        <button data-val="9" class="keypad-btn w-9 sm:w-11 h-9 sm:h-11 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-sm">9</button>
+      </div>
+
+      <!-- Fila 2: Flechas de Desplazamiento Táctil, Borrar y Posibles -->
+      <div class="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+        <button data-val="left" title="Mover izquierda" class="keypad-btn px-3 h-8 sm:h-9 bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 rounded font-bold text-sm shadow-sm flex items-center justify-center">◀</button>
+        <button data-val="up" title="Mover arriba" class="keypad-btn px-3 h-8 sm:h-9 bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 rounded font-bold text-sm shadow-sm flex items-center justify-center">▲</button>
+        <button data-val="down" title="Mover abajo" class="keypad-btn px-3 h-8 sm:h-9 bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 rounded font-bold text-sm shadow-sm flex items-center justify-center">▼</button>
+        <button data-val="right" title="Mover derecha" class="keypad-btn px-3 h-8 sm:h-9 bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 rounded font-bold text-sm shadow-sm flex items-center justify-center">▶</button>
+
+        <button data-val="clear" class="keypad-btn px-3 h-8 sm:h-9 bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-700 rounded font-bold text-xs shadow-sm">Borrar</button>
+        <button data-val="posibles" class="keypad-btn px-3 h-8 sm:h-9 bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-800 rounded font-bold text-xs shadow-sm">Posibles</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL: Buscar Sudoku en Colección -->
+  <div id="search-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-lg shadow-2xl border border-slate-300 max-w-lg w-full overflow-hidden flex flex-col">
+      <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
+        <h3 class="font-bold text-sm">Colección de Sudokus Guardados</h3>
+        <button id="btn-close-search" class="text-slate-400 hover:text-white font-bold text-lg leading-none">&times;</button>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap gap-3">
+        <div class="flex-1 min-w-[130px]">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Dificultad:</label>
+          <select id="search-level-filter" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800">
+            <option value="todos">Todos los niveles</option>
+            <option value="facil">Fácil</option>
+            <option value="medio">Medio</option>
+            <option value="dificil">Difícil</option>
+            <option value="endemoniado">Endemoniado</option>
+          </select>
+        </div>
+
+        <div class="flex-1 min-w-[130px]">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Estado:</label>
+          <select id="search-status-filter" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800">
+            <option value="todos">Todos los sudokus</option>
+            <option value="no_resueltos">Solo no resueltos</option>
+            <option value="resueltos">Solo resueltos</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="search-results-list" class="p-4 max-h-80 overflow-y-auto space-y-2 text-xs">
+        <!-- Rellenado dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Confirmación Genérica (Resolver / Reiniciar) -->
+  <div id="confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-lg shadow-2xl border border-slate-300 max-w-sm w-full p-5 text-center">
+      <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+        ?
+      </div>
+      <p id="confirm-message" class="text-xs text-slate-700 font-semibold mb-5 leading-relaxed">
+        ¿Deseas continuar?
+      </p>
+      <div class="flex items-center justify-center space-x-3 text-xs font-bold">
+        <button id="btn-confirm-yes" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded shadow transition">
+          Sí, continuar
+        </button>
+        <button id="btn-confirm-no" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded transition">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de página discreto -->
+  <footer class="mt-4 text-center text-xs text-slate-500 pb-4">
+    <span>Top-Sudoku © 2026 — Guillermo Tudela Soler</span>
+    <span class="mx-2">•</span>
+    <a href="manual.html" class="hover:text-blue-600 underline font-semibold">Manual de Usuario</a>
+    <span class="mx-2">•</span>
+    <a href="privacidad.html" class="hover:text-blue-600 underline">Política de Privacidad</a>
+    <span class="mx-2">•</span>
+    <a href="https://github.com/guitusol/top-sudoku" target="_blank" class="hover:text-blue-600 underline">Código en GitHub</a>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

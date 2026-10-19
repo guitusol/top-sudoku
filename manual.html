@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual del Usuario — Top-Sudoku</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-3 sm:p-6 md:p-8">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-slate-300 p-6 sm:p-10">
+    
+    <!-- Cabecera de Navegación -->
+    <div class="flex flex-wrap items-center justify-between border-b border-slate-200 pb-5 mb-8 gap-4">
+      <div class="flex items-center space-x-3">
+        <span class="w-8 h-8 rounded bg-amber-400 text-slate-900 font-black flex items-center justify-center text-sm shadow-sm">3S</span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900">Manual Oficial del Usuario</h1>
+          <p class="text-xs text-slate-500 font-medium">Top-Sudoku — Escuela y Solucionador Lógico de Sudoku</p>
+        </div>
+      </div>
+      <a href="index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow transition">
+        <span>🎮 Volver al Tablero</span>
+      </a>
+    </div>
+
+    <!-- Introducción Destacada -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 p-4 sm:p-5 rounded-r-lg mb-8 text-sm text-slate-700 leading-relaxed shadow-xs">
+      <strong class="font-bold text-blue-900">Filosofía de la Escuela Top-Sudoku:</strong> 
+      Aprender a resolver sudokus sin frustración. Aquí no se adivina jamás; cada número se deduce comprendiendo las posibilidades matemáticas de cada casilla y aplicando el descarte sistemático.
+    </div>
+
+    <div class="space-y-8 text-sm leading-relaxed text-slate-700">
+
+      <!-- Sección 1 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>🏛️</span> 1. Historia y Filosofía del Proyecto
+        </h2>
+        <p class="mb-2">
+          Top-Sudoku nació originalmente hace más de 20 años como una herramienta de escritorio desarrollada en <strong>Visual FoxPro</strong> por <strong>Guillermo Tudela Soler</strong>. Su propósito era convertir el sudoku en un ejercicio pedagógico de razonamiento lógico puro.
+        </p>
+        <p>
+          Esta versión web y móvil traslada aquella rapidez operativa sin alterar su esencia: funciona 100% en local, sin publicidad, sin recopilar datos y con máxima fidelidad matemática.
+        </p>
+      </section>
+
+      <!-- Sección 2 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>🧩</span> 2. El Tablero Dual (Los Dos Tableros Gemelos)
+        </h2>
+        <p class="mb-3">
+          La interfaz principal cuenta con dos cuadrículas de 9x9 sincronizadas en espejo:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3">
+          <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 text-blue-700">Tablero Izquierdo (Juego)</h3>
+            <p class="text-xs text-slate-600">
+              Es tu tablero de juego. Contiene las pistas iniciales fijas (en azul/negro fuerte) y las casillas que vas resolviendo.
+            </p>
+          </div>
+          <div class="bg-amber-50/60 border border-amber-200 rounded-lg p-4">
+            <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 text-amber-800">Tablero Derecho (Posibilidades)</h3>
+            <p class="text-xs text-slate-600">
+              Es el asistente analítico. Calcula y muestra en tiempo real todos los números [1..9] viables en cada casilla vacía.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 3 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>✨</span> 3. El Secreto Pedagógico: Candidato Único (Casillas Doradas)
+        </h2>
+        <p class="mb-2">
+          Conforme colocas números en el tablero de juego, el tablero de Posibilidades tacha automáticamente los números que ya no pueden repetirse en esa fila, columna o submatriz 3x3.
+        </p>
+        <div class="bg-amber-100 border border-amber-300 rounded-lg p-4 my-3 text-amber-900 text-xs">
+          <strong class="font-bold text-sm block mb-1">🌟 La Regla de Oro del Candidato Único (Naked Single):</strong>
+          Cuando en una celda del tablero derecho <strong>solo queda un número posible</strong>, la casilla se ilumina en color dorado resplandeciente. Eso significa que ese número es una certeza matemática incuestionable: colócalo en el tablero izquierdo sin miedo a equivocarte.
+        </div>
+      </section>
+
+      <!-- Sección 4 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>🛡️</span> 4. Validación en Caliente contra Errores
+        </h2>
+        <p>
+          Si intentas colocar un número que colisione con las normas del sudoku (duplicado en la misma fila, columna o caja 3x3), el sistema rechaza la acción de inmediato con una alerta sonora y visual. De este modo, nunca arrastrarás errores durante la partida.
+        </p>
+      </section>
+
+      <!-- Sección 5 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>🎮</span> 5. Controles en Ordenador y Móvil
+        </h2>
+        <div class="space-y-2">
+          <p><strong>En Ordenador (PC o Portátil):</strong></p>
+          <ul class="list-disc list-inside text-xs space-y-1 text-slate-600 ml-2">
+            <li>Navegación ágil mediante las <strong>Flechas de Dirección</strong> (← ↑ ↓ →) o clic de ratón.</li>
+            <li>Colocar números con las teclas numéricas del <strong>1 al 9</strong>.</li>
+            <li><strong>Auto-avance inteligente</strong>: Al acertar, el cursor se mueve solo a la siguiente casilla vacía.</li>
+            <li>Borrar con la tecla <strong>Supr</strong>, <strong>Retroceso</strong> o <strong>0</strong>.</li>
+          </ul>
+
+          <p class="pt-2"><strong>En Móvil o Tablet:</strong></p>
+          <ul class="list-disc list-inside text-xs space-y-1 text-slate-600 ml-2">
+            <li>Selector de pestañas superiores: alterna entre <strong>🎮 Tablero de Juego</strong> y <strong>🔍 Posibilidades por Cuadro</strong> con un solo toque.</li>
+            <li>Teclado numérico táctil en pantalla con respuesta inmediata.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Sección 6 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>⚙️</span> 6. Panel de Acciones (Botonera Estilo FoxPro)
+        </h2>
+        <div class="overflow-x-auto border border-slate-200 rounded-lg">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 uppercase">
+                <th class="p-3">Botón</th>
+                <th class="p-3">Descripción y Modo de Uso</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50 w-28">plantear</td>
+                <td class="p-3">Activa el modo de diseño para introducir un sudoku propio de una revista, periódico o libro.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">grabar</td>
+                <td class="p-3">Guarda el sudoku actual en tu almacenamiento local bajo el nivel y número asignados.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">buscar</td>
+                <td class="p-3">Abre el catálogo con filtros (todos, resueltos, no resueltos) y ranking de mejores marcas.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">limpiar</td>
+                <td class="p-3">Borra los números colocados por ti, devolviendo el sudoku a su posición inicial limpia.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">resolver</td>
+                <td class="p-3">El algoritmo interno de Backtracking resuelve automáticamente la partida al completo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Sección 7 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>📚</span> 7. Banco de Planteamientos por Dificultad
+        </h2>
+        <p class="mb-2">
+          La aplicación incluye un repertorio completo precargado clasificado en 4 niveles:
+        </p>
+        <ul class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold">
+          <li class="bg-emerald-50 text-emerald-800 p-2.5 rounded border border-emerald-200 text-center">🟢 Fácil</li>
+          <li class="bg-blue-50 text-blue-800 p-2.5 rounded border border-blue-200 text-center">🟡 Medio</li>
+          <li class="bg-amber-50 text-amber-800 p-2.5 rounded border border-amber-200 text-center">🔴 Difícil</li>
+          <li class="bg-purple-50 text-purple-800 p-2.5 rounded border border-purple-200 text-center">🟣 Endemoniado</li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Pie de Página -->
+    <div class="border-t border-slate-200 mt-10 pt-5 text-center text-xs text-slate-400">
+      Top-Sudoku &copy; 2026 &bull; Guillermo Tudela Soler &bull; Conectividad y Comunicaciones, S.L.
+    </div>
+
+  </div>
+</body>
+</html>
