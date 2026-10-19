@@ -30,7 +30,7 @@
     <!-- Introducción Destacada -->
     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 p-4 sm:p-5 rounded-r-lg mb-8 text-sm text-slate-700 leading-relaxed shadow-xs">
       <strong class="font-bold text-blue-900">Filosofía de la Escuela Top-Sudoku:</strong> 
-      Aprender a resolver sudokus sin frustración. Aquí no se adivina jamás; cada número se deduce comprendiendo las posibilidades matemáticas de cada casilla y aplicando el descarte sistemático.
+      Aprender a resolver sudokus con rigor lógico y sin frustración. Aquí no se adivina jamás; cada número se deduce comprendiendo las posibilidades matemáticas de cada casilla y aplicando el descarte sistemático.
     </div>
 
     <div class="space-y-8 text-sm leading-relaxed text-slate-700">
@@ -41,10 +41,10 @@
           <span>🏛️</span> 1. Historia y Filosofía del Proyecto
         </h2>
         <p class="mb-2">
-          Top-Sudoku nació originalmente hace más de 20 años como una herramienta de escritorio desarrollada en <strong>Visual FoxPro</strong> por <strong>Guillermo Tudela Soler</strong>. Su propósito era convertir el sudoku en un ejercicio pedagógico de razonamiento lógico puro.
+          Top-Sudoku nació originalmente hace más de 20 años como una herramienta de escritorio desarrollada en <strong>Visual FoxPro</strong> por <strong>Guillermo Tudela Soler</strong>. Su propósito era convertir el sudoku en un ejercicio pedagógico de razonamiento deductivo puro, proporcionando un asistente que calculase en tiempo real las opciones disponibles.
         </p>
         <p>
-          Esta versión web y móvil traslada aquella rapidez operativa sin alterar su esencia: funciona 100% en local, sin publicidad, sin recopilar datos y con máxima fidelidad matemática.
+          Esta versión web y móvil traslada aquella rapidez operativa y estética funcional sin alterar su esencia: funciona <strong>100% en local en tu navegador</strong>, sin publicidad, sin requerir servidores externos, sin cookies invasivas y con precisión matemática absoluta.
         </p>
       </section>
 
@@ -60,13 +60,13 @@
           <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
             <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 text-blue-700">Tablero Izquierdo (Juego)</h3>
             <p class="text-xs text-slate-600">
-              Es tu tablero de juego. Contiene las pistas iniciales fijas (en azul/negro fuerte) y las casillas que vas resolviendo.
+              Es tu tablero de juego activo. Contiene las pistas fijas iniciales (en azul/negro oscuro protegidas contra borrado) y las casillas donde vas introduciendo tus números deducidos.
             </p>
           </div>
           <div class="bg-amber-50/60 border border-amber-200 rounded-lg p-4">
-            <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 text-amber-800">Tablero Derecho (Posibilidades)</h3>
+            <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-1 text-amber-800">Tablero Derecho (Posibilidades por Cuadro)</h3>
             <p class="text-xs text-slate-600">
-              Es el asistente analítico. Calcula y muestra en tiempo real todos los números [1..9] viables en cada casilla vacía.
+              Es el asistente analítico o tutor en espejo. Calcula y muestra en tiempo real todos los candidatos [1..9] matemáticamente válidos para cada celda vacía según las reglas de no colisión.
             </p>
           </div>
         </div>
@@ -75,96 +75,136 @@
       <!-- Sección 3 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>✨</span> 3. El Secreto Pedagógico: Candidato Único (Casillas Doradas)
+          <span>✨</span> 3. Candidato Único (Casillas Doradas) y Sombreado Focal
         </h2>
         <p class="mb-2">
-          Conforme colocas números en el tablero de juego, el tablero de Posibilidades tacha automáticamente los números que ya no pueden repetirse en esa fila, columna o submatriz 3x3.
+          Conforme colocas números en el tablero de juego, el tablero de posibilidades descarta al instante los números que ya no pueden repetirse en esa fila, columna o caja 3x3.
         </p>
-        <div class="bg-amber-100 border border-amber-300 rounded-lg p-4 my-3 text-amber-900 text-xs">
+        <div class="bg-amber-100/80 border border-amber-300 rounded-lg p-4 my-3 text-amber-950 text-xs leading-relaxed">
           <strong class="font-bold text-sm block mb-1">🌟 La Regla de Oro del Candidato Único (Naked Single):</strong>
-          Cuando en una celda del tablero derecho <strong>solo queda un número posible</strong>, la casilla se ilumina en color dorado resplandeciente. Eso significa que ese número es una certeza matemática incuestionable: colócalo en el tablero izquierdo sin miedo a equivocarte.
+          Cuando en una celda del tablero derecho <strong>solo queda un único número posible</strong>, la casilla se ilumina en color dorado resplandeciente. Eso significa que ese número es una certeza matemática incuestionable: colócalo en el tablero izquierdo sin temor a equivocarte.
+        </div>
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
+          <strong class="font-bold text-slate-800 block mb-1">🎯 Sombreado Focal de Visión Periférica:</strong>
+          Al seleccionar cualquier casilla con el ratón o el teclado, el sistema proyecta un sombreado suave sobre toda la fila, toda la columna y la caja 3x3 a la que pertenece. Esto permite revisar de un solo vistazo los números ya colocados y realizar descartes rápidos sin desviar la mirada.
         </div>
       </section>
 
       <!-- Sección 4 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>🛡️</span> 4. Validación en Caliente y Criterios de Rechazo
+          <span>🛡️</span> 4. Criterios de Rechazo de Casilla (Configurable por el Jugador)
         </h2>
         <p class="mb-3">
-          Top-Sudoku permite al jugador elegir libremente cómo desea que se valide y rechace la entrada de un número en cada casilla durante la partida:
+          En la barra de controles superior encontrarás el selector <strong>«🛡️ Rechazo de casilla»</strong>. Top-Sudoku te permite elegir libremente entre dos filosofías de juego según tu experiencia y preferencia:
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-          <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <strong class="text-blue-900 font-bold block mb-1">🎯 Opción 1: Resultado Final (Solución única)</strong>
-            <p class="text-slate-600 leading-relaxed">
-              El sistema comprueba el número introducido contra la solución matemática definitiva del Sudoku. Si no coincide, rechaza la casilla al instante. Es el modo pedagógico ideal para principiantes: evita bifurcaciones erróneas y bloqueos o callejones sin salida tardíos.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 bg-blue-50/80 border border-blue-200 rounded-xl space-y-2">
+            <div class="flex items-center space-x-1.5 font-bold text-blue-950 text-sm">
+              <span>🎯</span>
+              <span>Resultado Final (Solución Única)</span>
+            </div>
+            <p class="text-slate-700 leading-relaxed">
+              El sistema evalúa el número tecleado contra la <strong>solución matemática definitiva</strong> del puzle. Si el número no corresponde a la solución final de esa celda, la acción se rechaza al instante con parpadeo rojo de alerta.
             </p>
+            <div class="bg-white/80 p-2.5 rounded border border-blue-200 text-blue-900">
+              <strong>Ideal para:</strong> Jugadores en aprendizaje o principiantes. Impide bifurcaciones erróneas y garantiza que nunca llegarás a un callejón sin salida (<em>deadlock</em>) tras haber rellenado 20 casillas sin saber dónde estuvo el fallo original.
+            </div>
           </div>
-          <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <strong class="text-amber-900 font-bold block mb-1">🧩 Opción 2: Situación Actual (Reglas clásicas)</strong>
-            <p class="text-slate-600 leading-relaxed">
-              El sistema evalúa el número únicamente en base a la situación actual del tablero, rechazándolo si colisiona con otro idéntico en su fila, columna o caja 3x3 y resaltando las casillas en conflicto. Permite deducción libre, hipótesis y ensayo sin desvelar la solución final.
+
+          <div class="p-4 bg-amber-50/80 border border-amber-200 rounded-xl space-y-2">
+            <div class="flex items-center space-x-1.5 font-bold text-amber-950 text-sm">
+              <span>🧩</span>
+              <span>Situación Actual (Reglas Clásicas)</span>
+            </div>
+            <p class="text-slate-700 leading-relaxed">
+              El sistema evalúa el número únicamente en base al <strong>estado presente del tablero</strong>. Si no colisiona con ningún número existente en su fila, columna o caja 3x3, el número <strong>se acepta y se coloca</strong>. Si colisiona, parpadea en rojo tanto la celda activa como las celdas en conflicto.
             </p>
+            <div class="bg-white/80 p-2.5 rounded border border-amber-200 text-amber-900">
+              <strong>Ideal para:</strong> Jugadores experimentados y puristas del Sudoku. Permite aplicar hipótesis, ensayo y deducción personal libre sin que el software anticipe o desvele la solución definitiva antes de tiempo.
+            </div>
           </div>
         </div>
+        <p class="text-xs text-slate-500 mt-2 italic">
+          * Tu preferencia se guarda automáticamente en tu navegador y puedes alternar de un modo a otro en caliente en cualquier momento sin perder tu partida.
+        </p>
       </section>
 
       <!-- Sección 5 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>🎮</span> 5. Controles en Ordenador y Móvil
+          <span>🎮</span> 5. Controles en Ordenador, Portátil, Móvil y Tablet
         </h2>
-        <div class="space-y-2">
-          <p><strong>En Ordenador (PC o Portátil):</strong></p>
-          <ul class="list-disc list-inside text-xs space-y-1 text-slate-600 ml-2">
-            <li>Navegación ágil mediante las <strong>Flechas de Dirección</strong> (← ↑ ↓ →) o clic de ratón.</li>
-            <li>Colocar números con las teclas numéricas del <strong>1 al 9</strong>.</li>
-            <li><strong>Auto-avance inteligente</strong>: Al acertar, el cursor se mueve solo a la siguiente casilla vacía.</li>
-            <li>Borrar con la tecla <strong>Supr</strong>, <strong>Retroceso</strong> o <strong>0</strong>.</li>
-          </ul>
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5">
+            <p class="font-bold text-slate-800 text-sm">💻 En Ordenador o Portátil (Teclado Físico y Ratón):</p>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 ml-2">
+              <li><strong>Navegación</strong>: Haz clic en cualquier casilla o usa las <strong>Flechas de dirección</strong> (← ↑ ↓ →).</li>
+              <li><strong>Introducir números</strong>: Pulsa las teclas del <strong>1 al 9</strong> del teclado numérico o alfanumérico.</li>
+              <li><strong>Auto-avance inteligente</strong>: Al colocar un número válido, el cursor salta automáticamente a la siguiente casilla vacía disponible.</li>
+              <li><strong>Borrar</strong>: Pulsa la tecla <strong>Supr</strong>, <strong>Retroceso</strong> o el <strong>0</strong> para vaciar una casilla rellenada por ti.</li>
+            </ul>
+          </div>
 
-          <p class="pt-2"><strong>En Móvil o Tablet:</strong></p>
-          <ul class="list-disc list-inside text-xs space-y-1 text-slate-600 ml-2">
-            <li>Selector de pestañas superiores: alterna entre <strong>🎮 Tablero de Juego</strong> y <strong>🔍 Posibilidades por Cuadro</strong> con un solo toque.</li>
-            <li>Teclado numérico táctil en pantalla con respuesta inmediata.</li>
-          </ul>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5">
+            <p class="font-bold text-slate-800 text-sm">📱 En Móvil o Tablet (Pantalla Táctil):</p>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 ml-2">
+              <li><strong>Pestañas superiores</strong>: Alterna entre el <em>🎮 Tablero de Juego</em> y las <em>🔍 Posibilidades por Cuadro</em> con un solo toque.</li>
+              <li><strong>Teclado táctil inferior</strong>: Números grandes del 1 al 9, flechas direccionales, botón de borrado y acceso directo a Posibles.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
       <!-- Sección 6 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>⚙️</span> 6. Panel de Acciones (Botonera Estilo FoxPro)
+          <span>⚙️</span> 6. Panel de Acciones (Botonera Estilo Visual FoxPro)
         </h2>
         <div class="overflow-x-auto border border-slate-200 rounded-lg">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 uppercase">
                 <th class="p-3">Botón</th>
-                <th class="p-3">Descripción y Modo de Uso</th>
+                <th class="p-3">Función y Modo de Uso</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200">
               <tr>
                 <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50 w-28">plantear</td>
-                <td class="p-3">Activa el modo de diseño para introducir un sudoku propio de una revista, periódico o libro.</td>
+                <td class="p-3">Limpia el tablero y activa el modo de diseño para introducir pistas de un sudoku de una revista, periódico o libro. Asigna automáticamente el siguiente número libre en la colección.</td>
               </tr>
               <tr>
                 <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">grabar</td>
-                <td class="p-3">Guarda el sudoku actual en tu almacenamiento local bajo el nivel y número asignados.</td>
+                <td class="p-3">Comprueba mediante Backtracking que el sudoku planteado tiene solución matemática válida y lo almacena en tu colección local sin sobreescribir puzles existentes, avanzando al siguiente número libre.</td>
               </tr>
               <tr>
                 <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">buscar</td>
-                <td class="p-3">Abre el catálogo con filtros (todos, resueltos, no resueltos) y ranking de mejores marcas.</td>
+                <td class="p-3">Abre el catálogo interactivo de sudokus guardados con filtros por nivel y estado de resolución, tiempos récord, carga inmediata y papelera de borrado.</td>
               </tr>
               <tr>
-                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">limpiar</td>
-                <td class="p-3">Borra los números colocados por ti, devolviendo el sudoku a su posición inicial limpia.</td>
+                <td class="p-3 font-mono font-bold text-emerald-700 bg-slate-50">iniciar</td>
+                <td class="p-3">Bloquea las pistas iniciales en color azul, arranca el cronómetro de partida y activa la validación en caliente para comenzar a resolver.</td>
               </tr>
               <tr>
-                <td class="p-3 font-mono font-bold text-blue-700 bg-slate-50">resolver</td>
-                <td class="p-3">El algoritmo interno de Backtracking resuelve automáticamente la partida al completo.</td>
+                <td class="p-3 font-mono font-bold text-amber-800 bg-slate-50">posibles</td>
+                <td class="p-3">Calcula y despliega de inmediato la pantalla espejo derecha con los candidatos posibles de cada casilla y resalta los candidatos únicos dorados.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-indigo-700 bg-slate-50">resolver</td>
+                <td class="p-3">Pide confirmación y resuelve matemáticamente todo el sudoku mostrando la solución exacta al instante.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-rose-700 bg-slate-50">reiniciar</td>
+                <td class="p-3">Restaura la partida a su posición inicial limpia (conservando las pistas) y pone el cronómetro a cero tras pedir confirmación.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">cancelar</td>
+                <td class="p-3">Detiene la partida en curso o el modo de planteamiento y devuelve la aplicación al estado de reposo inicial.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">cerrar</td>
+                <td class="p-3">Cierra el juego activo o la ventana de la aplicación.</td>
               </tr>
             </tbody>
           </table>
@@ -174,40 +214,80 @@
       <!-- Sección 7 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>📚</span> 7. Banco de Planteamientos por Dificultad
+          <span>📝</span> 7. Planteamiento Propio y Grabación Multi-Sudoku
         </h2>
         <p class="mb-2">
-          La aplicación incluye un repertorio completo precargado clasificado en 4 niveles:
+          ¿Tienes un sudoku en una revista o periódico que no consigues resolver? Puedes introducirlo en Top-Sudoku:
         </p>
-        <ul class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold">
-          <li class="bg-emerald-50 text-emerald-800 p-2.5 rounded border border-emerald-200 text-center">🟢 Fácil</li>
-          <li class="bg-blue-50 text-blue-800 p-2.5 rounded border border-blue-200 text-center">🟡 Medio</li>
-          <li class="bg-amber-50 text-amber-800 p-2.5 rounded border border-amber-200 text-center">🔴 Difícil</li>
-          <li class="bg-purple-50 text-purple-800 p-2.5 rounded border border-purple-200 text-center">🟣 Endemoniado</li>
-        </ul>
+        <ol class="list-decimal list-inside space-y-1.5 text-xs text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-200">
+          <li>Pulsa el botón <strong>plantear</strong>: El tablero se limpiará y el campo <code>Colección nº</code> tomará automáticamente el siguiente número libre disponible en ese nivel.</li>
+          <li>Introduce los números iniciales del periódico en las casillas correspondientes.</li>
+          <li>Pulsa <strong>grabar</strong>: El motor verificará que el planteamiento es matemáticamente resoluble y lo guardará en tu navegador con una ranura incremental propia (ej. Fácil #3, #4, #5...) <strong>sin sobreescribir jamás tus sudokus anteriores</strong>.</li>
+          <li>Pulsa <strong>iniciar</strong> para jugarlo tú mismo, o pulsa <strong>posibles</strong> para ver los candidatos calculados por el asistente.</li>
+        </ol>
       </section>
 
       <!-- Sección 8 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>🌱</span> 8. Generador Universal por Semilla
+          <span>🌱</span> 8. Generación por Semilla y Cadenas de 81 Caracteres
         </h2>
         <p class="mb-2 leading-relaxed">
-          Además de los sudokus precargados en la colección, puedes <strong>proponer cualquier semilla matemática</strong> (número o palabra) para generar un Sudoku único con solución matemáticamente garantizada:
+          Top-Sudoku dispone de un motor determinista Lehmer que genera infinitos puzles matemáticos con solución única a partir de cualquier código o texto:
         </p>
-        <div class="bg-blue-50 border border-blue-200 rounded p-3 text-xs text-blue-900 space-y-1.5">
-          <p>• <strong>Proponer un número o texto</strong>: Escribe tu semilla en el campo <code>🌱 Semilla</code> y pulsa <strong>Cargar</strong> (o presiona Intro).</p>
-          <p>• <strong>Botón Aleatorio (🎲)</strong>: Genera una semilla nueva al azar al instante.</p>
-          <p>• <strong>Compartir la misma partida</strong>: Al proponer una semilla, la URL se actualiza automáticamente (ej. <code>?semilla=40837&nivel=facil</code>). Envía ese enlace a cualquier amigo o familiar y ambos resolveréis exactamente el mismo Sudoku.</p>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-xs text-blue-950 space-y-2">
+          <p>
+            • <strong>Semillas Alfanuméricas</strong>: Escribe cualquier número o palabra (ej. <code>40837</code>, <code>reto1</code>) en el campo <code>🌱 Semilla</code> y pulsa <strong>Cargar</strong> (o presiona Intro). Se generará un sudoku determinista único para el nivel seleccionado.
+          </p>
+          <p>
+            • <strong>Botón de Azar (🎲)</strong>: Genera una semilla matemática aleatoria con un solo clic.
+          </p>
+          <p>
+            • <strong>Importación de Cadenas de 81 Caracteres</strong>: Puedes pegar directamente en el campo de semilla una cadena completa de 81 caracteres de dígitos y puntos (ej. <code>...26.7.168..7..9.19...45..82.1...4...46.29...5...3.28..93...74.4..5..367.3.18...</code>). El sistema detectará automáticamente el tablero completo, calculará su solución y lo cargará listo para jugar o grabar.
+          </p>
+          <p>
+            • <strong>Compartir la misma partida</strong>: Al proponer una semilla, la URL del navegador se sincroniza al instante (ej. <code>?semilla=40837&nivel=facil</code>). Copia y envía ese enlace a quien desees para competir o comparar deducciones sobre el mismo puzle exacto.
+          </p>
+        </div>
+      </section>
+
+      <!-- Sección 9 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>🔍</span> 9. Catálogo de Colección y Buscador
+        </h2>
+        <p class="mb-2">
+          Al pulsar el botón <strong>buscar</strong> se abre la biblioteca de sudokus guardados:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-200">
+          <li><strong>Filtrado ágil</strong>: Filtra por nivel (Fácil, Medio, Difícil, Endemoniado o Todos) y por estado (Resueltos, No resueltos o Todos).</li>
+          <li><strong>Orden numérico estricto</strong>: Todos tus puzles (base y personalizados) aparecen ordenados correlativamente con su fecha y mejor tiempo cronometrado.</li>
+          <li><strong>Papelera de borrado seguro (🗑️)</strong>: Puedes eliminar planteamientos personalizados antiguos con un solo clic para mantener tu colección limpia.</li>
+        </ul>
+      </section>
+
+      <!-- Sección 10 -->
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <span>⏰</span> 10. Reloj Analógico Clásico y Niveles de Dificultad
+        </h2>
+        <p class="mb-2">
+          En la barra superior, junto a la fecha y el cronómetro de juego, se muestra un <strong>reloj analógico clásico de tres agujas</strong> funcional en tiempo real, homenaje a las aplicaciones de gestión de los años 90 en Visual FoxPro.
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold text-center my-3">
+          <div class="bg-emerald-50 text-emerald-800 p-2.5 rounded border border-emerald-200">🟢 Fácil (38+ pistas)</div>
+          <div class="bg-blue-50 text-blue-800 p-2.5 rounded border border-blue-200">🔵 Medio (32+ pistas)</div>
+          <div class="bg-amber-50 text-amber-800 p-2.5 rounded border border-amber-200">🟠 Difícil (26+ pistas)</div>
+          <div class="bg-purple-50 text-purple-800 p-2.5 rounded border border-purple-200">🟣 Endemoniado (22 pistas)</div>
         </div>
       </section>
 
       <!-- Dedicatoria y Autoría -->
-      <section class="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center mt-6 shadow-xs">
-        <p class="font-bold text-slate-800 text-sm">Desarrollado por Guillermo Tudela</p>
+      <section class="bg-slate-50 border border-slate-200 rounded-lg p-5 text-center mt-8 shadow-xs">
+        <p class="font-bold text-slate-900 text-sm">Desarrollado por Guillermo Tudela Soler</p>
         <p class="text-xs text-slate-600 font-semibold mb-2">Director de CONECTIVIDAD Y COMUNICACIONES, S. L.</p>
-        <p class="text-xs text-slate-600 italic">
-          Esta APP está dedicada a mi familia, amigos y a todos los apasionados por los Rompecabezas y Sudokus.
+        <p class="text-xs text-slate-500 italic max-w-lg mx-auto leading-relaxed">
+          Esta aplicación está dedicada a mi familia, amigos y a todos los apasionados por los rompecabezas matemáticos, la lógica deductiva y la escuela clásica del Sudoku.
         </p>
       </section>
 
