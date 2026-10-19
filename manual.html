@@ -89,11 +89,25 @@
       <!-- Sección 4 -->
       <section>
         <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <span>🛡️</span> 4. Validación en Caliente contra Errores
+          <span>🛡️</span> 4. Validación en Caliente y Criterios de Rechazo
         </h2>
-        <p>
-          Si intentas colocar un número que colisione con las normas del sudoku (duplicado en la misma fila, columna o caja 3x3), el sistema rechaza la acción de inmediato con una alerta sonora y visual. De este modo, nunca arrastrarás errores durante la partida.
+        <p class="mb-3">
+          Top-Sudoku permite al jugador elegir libremente cómo desea que se valide y rechace la entrada de un número en cada casilla durante la partida:
         </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <strong class="text-blue-900 font-bold block mb-1">🎯 Opción 1: Resultado Final (Solución única)</strong>
+            <p class="text-slate-600 leading-relaxed">
+              El sistema comprueba el número introducido contra la solución matemática definitiva del Sudoku. Si no coincide, rechaza la casilla al instante. Es el modo pedagógico ideal para principiantes: evita bifurcaciones erróneas y bloqueos o callejones sin salida tardíos.
+            </p>
+          </div>
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <strong class="text-amber-900 font-bold block mb-1">🧩 Opción 2: Situación Actual (Reglas clásicas)</strong>
+            <p class="text-slate-600 leading-relaxed">
+              El sistema evalúa el número únicamente en base a la situación actual del tablero, rechazándolo si colisiona con otro idéntico en su fila, columna o caja 3x3 y resaltando las casillas en conflicto. Permite deducción libre, hipótesis y ensayo sin desvelar la solución final.
+            </p>
+          </div>
+        </div>
       </section>
 
       <!-- Sección 5 -->

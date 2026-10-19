@@ -133,6 +133,24 @@
           </div>
         </div>
 
+        <!-- Criterio de Rechazo de Casilla (Configurable por el Jugador) -->
+        <div class="bg-amber-50/70 border border-amber-200/90 rounded px-3 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-2xs">
+          <div class="flex items-center space-x-1.5 font-bold text-slate-700">
+            <span class="text-amber-600">🛡️</span>
+            <span>Rechazo de casilla:</span>
+          </div>
+          <div class="flex items-center space-x-4 flex-wrap">
+            <label class="inline-flex items-center space-x-1.5 cursor-pointer select-none" title="Comprobación contra la solución definitiva: rechaza el número si no coincide con el resultado final del Sudoku (Escuela de lógica: evita bifurcaciones erróneas y callejones sin salida).">
+              <input type="radio" name="criterio_rechazo" value="solucion" checked class="text-blue-600 focus:ring-0">
+              <span class="font-semibold text-slate-800">Resultado final <span class="text-slate-500 font-normal">(Solución única)</span></span>
+            </label>
+            <label class="inline-flex items-center space-x-1.5 cursor-pointer select-none" title="Comprobación contra el tablero actual: rechaza el número únicamente si colisiona con fila, columna o caja 3x3 en la situación actual (Reglas clásicas: permite deducción libre y ensayo sin desvelar la solución).">
+              <input type="radio" name="criterio_rechazo" value="situacion_actual" class="text-blue-600 focus:ring-0">
+              <span class="font-semibold text-slate-800">Situación actual <span class="text-slate-500 font-normal">(Reglas clásicas)</span></span>
+            </label>
+          </div>
+        </div>
+
         <!-- Botonera de Acciones (Estilo FoxPro) -->
         <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 text-xs font-semibold">
           <button id="btn-plantear" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">

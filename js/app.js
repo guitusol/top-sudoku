@@ -24,6 +24,9 @@ class SudokuApp {
     // Posibilidades activas
     this.showPossibilities = false;
 
+    // Criterio de rechazo de casilla ('solucion' vs 'situacion_actual')
+    this.rejectionCriterion = localStorage.getItem('top_sudoku_rejection_criterion') || 'solucion';
+
     // Cronómetro
     this.timerInterval = null;
     this.clockInterval = null;
@@ -97,6 +100,9 @@ class SudokuApp {
       puzzleNumberInput: document.getElementById('puzzle-number-input'),
       statusBadge: document.getElementById('status-badge'),
 
+      // Criterio de rechazo de casilla
+      rejectionRadios: document.querySelectorAll('input[name="criterio_rechazo"]'),
+
       // Modales
       searchModal: document.getElementById('search-modal'),
       searchLevelFilter: document.getElementById('search-level-filter'),
@@ -112,6 +118,10 @@ class SudokuApp {
       // Teclado numérico táctil móvil
       keypad: document.getElementById('touch-keypad')
     };
+
+    // Sincronizar radio del criterio de rechazo guardado
+    const activeRejection = document.querySelector(`input[name="criterio_rechazo"][value="${this.rejectionCriterion}"]`);
+    if (activeRejection) activeRejection.checked = true;
 
     this.renderLeftBoard();
     this.renderRightBoard();
@@ -143,6 +153,19 @@ class SudokuApp {
     this.dom.btnModalLoadSeed?.addEventListener('click', () => this.handleModalProposeSeed());
     this.dom.modalSeedInput?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') this.handleModalProposeSeed();
+    });
+
+    // Criterio de rechazo de casilla ('solucion' vs 'situacion_actual')
+    this.dom.rejectionRadios?.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        this.rejectionCriterion = e.target.value;
+        localStorage.setItem('top_sudoku_rejection_criterion', this.rejectionCriterion);
+        if (this.rejectionCriterion === 'solucion') {
+          this.setStatus('Criterio: Rechazo contra el resultado final (Solución única).', 'info');
+        } else {
+          this.setStatus('Criterio: Rechazo según la situación actual (Reglas clásicas de fila, col y caja).', 'info');
+        }
+      });
     });
 
     // Niveles radio buttons y número
@@ -387,26 +410,37 @@ class SudokuApp {
       return;
     }
 
-    // Modo Jugando: VALIDACIÓN PEDAGÓGICA ESTRICTA (Escuela de Lógica)
-    // Se valida contra la solución matemática única para impedir callejones sin salida
+    // Modo Jugando: VALIDACIÓN SEGÚN EL CRITERIO ELEGIDO POR EL JUGADOR
     if (this.mode === 'jugando') {
-      if (!this.solutionGrid) {
-        const res = this.engine.solve(this.initialGrid);
-        if (res.solved) {
-          this.solutionGrid = this.engine.cloneGrid(res.solution);
+      if (this.rejectionCriterion === 'solucion') {
+        // Opción A: Comprobación estricta contra el Resultado Final (Solución única)
+        if (!this.solutionGrid) {
+          const res = this.engine.solve(this.initialGrid);
+          if (res.solved) {
+            this.solutionGrid = this.engine.cloneGrid(res.solution);
+          }
         }
-      }
 
-      if (this.solutionGrid && this.solutionGrid[row][col] !== 0) {
-        if (num !== this.solutionGrid[row][col]) {
-          this.flashCellError(row, col);
-          this.setStatus(`¡Rechazado! El número ${num} no es correcto para esta casilla en este Sudoku.`, 'error');
-          return;
+        if (this.solutionGrid && this.solutionGrid[row][col] !== 0) {
+          if (num !== this.solutionGrid[row][col]) {
+            this.flashCellError(row, col);
+            this.setStatus(`¡Rechazado! El número ${num} no coincide con el resultado final de esta casilla.`, 'error');
+            return;
+          }
+        } else {
+          if (!this.engine.isValidMove(this.playGrid, row, col, num)) {
+            this.flashCellError(row, col);
+            this.setStatus(`¡Rechazado! El número ${num} colisiona en fila, columna o caja 3x3.`, 'error');
+            return;
+          }
         }
       } else {
+        // Opción B: Comprobación según la Situación Actual de la casilla (Reglas clásicas)
         if (!this.engine.isValidMove(this.playGrid, row, col, num)) {
           this.flashCellError(row, col);
-          this.setStatus(`¡Rechazado! El número ${num} colisiona en fila, columna o caja 3x3.`, 'error');
+          const collisions = this.findCollisions(this.playGrid, row, col, num);
+          collisions.forEach(c => this.flashCellError(c.row, c.col));
+          this.setStatus(`¡Rechazado! El número ${num} colisiona en fila, columna o caja 3x3 en la situación actual.`, 'error');
           return;
         }
       }
@@ -414,11 +448,16 @@ class SudokuApp {
       this.playGrid[row][col] = num;
       this.updateBoardDisplay();
 
-      // Comprobar si completó el Sudoku
+      // Comprobar si completó el Sudoku o si está lleno
       if (this.engine.isCompleted(this.playGrid)) {
         this.handleGameWon();
       } else {
-        this.advanceToNextCell(row, col);
+        const isFull = this.playGrid.every(r => r.every(v => v !== 0));
+        if (isFull) {
+          this.setStatus('Tablero completo, pero contiene contradicciones o números repetidos.', 'error');
+        } else {
+          this.advanceToNextCell(row, col);
+        }
       }
     }
   }
@@ -447,6 +486,34 @@ class SudokuApp {
         }
       }
     }
+  }
+
+  /**
+   * Localiza todas las casillas que provocan colisión con 'num' en fila, col o caja 3x3
+   */
+  findCollisions(grid, row, col, num) {
+    const collisions = [];
+    // Fila
+    for (let c = 0; c < 9; c++) {
+      if (c !== col && grid[row][c] === num) collisions.push({ row, col: c });
+    }
+    // Columna
+    for (let r = 0; r < 9; r++) {
+      if (r !== row && grid[r][col] === num) collisions.push({ row: r, col });
+    }
+    // Caja 3x3
+    const startRow = Math.floor(row / 3) * 3;
+    const startCol = Math.floor(col / 3) * 3;
+    for (let r = startRow; r < startRow + 3; r++) {
+      for (let c = startCol; c < startCol + 3; c++) {
+        if ((r !== row || c !== col) && grid[r][c] === num) {
+          if (!collisions.some(item => item.row === r && item.col === c)) {
+            collisions.push({ row: r, col: c });
+          }
+        }
+      }
+    }
+    return collisions;
   }
 
   flashCellError(row, col) {
