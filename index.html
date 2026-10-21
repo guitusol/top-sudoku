@@ -21,6 +21,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css?v=1.3">
   <script>
+    window.forceAppReload = function() {
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          names.forEach(function(name) { caches.delete(name); });
+        });
+      }
+      var cleanUrl = window.location.origin + window.location.pathname + '?v=' + Date.now();
+      window.location.replace(cleanUrl);
+    };
     window.openTopLogoModal = function() {
       var modal = document.getElementById('modal-top-logo');
       if (modal) modal.classList.remove('hidden');
@@ -53,7 +62,10 @@
           </h1>
         </div>
       </div>
-      <div class="flex items-center space-x-3 text-xs">
+      <div class="flex items-center space-x-2 text-xs">
+        <button type="button" onclick="window.forceAppReload()" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-200 px-2 py-1 rounded shadow-xs transition flex items-center gap-1 cursor-pointer font-bold" title="Recargar aplicación y limpiar caché (🔄)">
+          <span>🔄</span>
+        </button>
         <a href="manual.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition" title="Manual del Usuario y Escuela Lógica"><span>📖</span><span>Manual</span></a>
         <span id="status-badge" class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded">Listo</span>
       </div>
@@ -194,12 +206,14 @@
 
           <div class="flex items-center space-x-1.5">
             <span class="font-semibold text-slate-600" title="Número de Sudoku guardado en tu colección local">Colección nº:</span>
-            <div class="inline-flex items-center border border-slate-300 rounded overflow-hidden bg-white shadow-2xs">
-              <button type="button" id="btn-prev-puzzle" title="Sudoku anterior" 
-                class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs select-none active:bg-slate-300 transition cursor-pointer">◀</button>
-              <input type="tel" id="puzzle-number-input" value="1" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" class="w-14 bg-white px-1.5 py-1 text-center font-bold text-slate-800 text-sm border-x border-slate-200 focus:outline-hidden focus:bg-blue-50" title="Número de Sudoku en colección">
-              <button type="button" id="btn-next-puzzle" title="Siguiente sudoku" 
-                class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs select-none active:bg-slate-300 transition cursor-pointer">▶</button>
+            <div class="inline-flex items-center border border-slate-300 rounded-lg overflow-hidden bg-white shadow-xs">
+              <button type="button" id="btn-prev-puzzle" title="Sudoku anterior (◀)" 
+                class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-sm select-none active:bg-slate-300 transition cursor-pointer">◀</button>
+              <input type="tel" id="puzzle-number-input" value="1" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" 
+                class="w-14 bg-white px-1 py-1 text-center font-bold text-slate-800 text-sm border-x border-slate-200 focus:outline-hidden focus:bg-blue-50" 
+                title="Número de Sudoku en colección">
+              <button type="button" id="btn-next-puzzle" title="Siguiente sudoku (▶)" 
+                class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-sm select-none active:bg-slate-300 transition cursor-pointer">▶</button>
             </div>
           </div>
         </div>
@@ -522,7 +536,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=1.5"></script>
+  <script type="module" src="js/app.js?v=1.6"></script>
   <!-- Modal Presentación Logotipo Top Sudoku -->
   <div id="modal-top-logo" onclick="if(event.target === this) window.closeTopLogoModal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">
