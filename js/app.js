@@ -276,6 +276,19 @@ class SudokuApp {
       }
     });
 
+    this.dom.puzzleNumberInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+
+    this.dom.puzzleNumberInput.addEventListener('focus', (e) => {
+      e.target.select();
+      setTimeout(() => {
+        try {
+          e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (_) {}
+      }, 300);
+    });
+
     this.dom.puzzleNumberInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         this.dom.puzzleNumberInput.blur();
