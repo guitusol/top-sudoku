@@ -51,10 +51,10 @@
     
     <!-- Cabecera de Navegación -->
     <div class="flex flex-wrap items-center justify-between border-b border-slate-200 pb-5 mb-8 gap-4">
-      <div class="flex items-center space-x-3">
-        <img src="icons/icon-192.png" alt="Top Sudoku" class="w-9 h-9 rounded-lg shadow-sm object-contain border border-amber-400/40">
+      <div onclick="window.openTopLogoModal()" class="flex items-center space-x-3 cursor-pointer hover:opacity-90 transition group select-none p-1 rounded-lg hover:bg-slate-100" title="Haz clic para ver nuestro logotipo oficial">
+        <img src="icons/icon-192.png" alt="Top Sudoku" class="w-9 h-9 rounded-lg shadow-sm object-contain border border-amber-400/40 group-hover:scale-105 transition pointer-events-none">
         <div>
-          <h1 class="text-xl sm:text-2xl font-black text-slate-900">Manual Oficial del Usuario</h1>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-blue-800 transition">Manual Oficial del Usuario</h1>
           <p class="text-xs text-slate-500 font-medium">Top-Sudoku — Escuela y Solucionador Lógico de Sudoku</p>
         </div>
       </div>
@@ -372,5 +372,42 @@
     </div>
 
   </div>
+<!-- Modal Presentación Logotipo Top Sudoku -->
+  <div id="modal-top-logo" onclick="if(event.target === this) window.closeTopLogoModal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">
+      <button onclick="window.closeTopLogoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-800 transition">✕</button>
+      
+      <div class="mb-5 inline-block">
+        <img src="icons/top_sudoku_logo.png" alt="Logotipo Top Sudoku" class="w-56 h-56 mx-auto rounded-2xl shadow-2xl border-2 border-amber-400/40 object-cover">
+      </div>
+      
+      <h2 class="text-xl font-black text-amber-400 mb-1">TOP SUDOKU</h2>
+      <p class="text-xs uppercase tracking-wider text-amber-300/80 font-bold mb-4">Escuela de Lógica & Solucionador Dual</p>
+      
+      <p class="text-slate-100 font-semibold text-base leading-relaxed mb-6">
+        Estamos encantados con nuestro Logotipo y no nos resistimos a enseñártelo. ¿Te gusta?
+      </p>
+      
+      <div class="flex gap-3 justify-center">
+        <button onclick="alert('¡Muchas gracias! Nos alegra mucho que te guste.'); window.closeTopLogoModal();" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-2.5 px-4 rounded-xl shadow-lg transition cursor-pointer">
+          ¡Me encanta! ❤️
+        </button>
+        <button onclick="window.closeTopLogoModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.openTopLogoModal = function() {
+      const modal = document.getElementById('modal-top-logo');
+      if (modal) modal.classList.remove('hidden');
+    };
+    window.closeTopLogoModal = function() {
+      const modal = document.getElementById('modal-top-logo');
+      if (modal) modal.classList.add('hidden');
+    };
+  </script>
 </body>
 </html>
