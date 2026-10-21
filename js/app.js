@@ -276,6 +276,33 @@ class SudokuApp {
       }
     });
 
+    this.dom.puzzleNumberInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        this.dom.puzzleNumberInput.blur();
+      }
+    });
+
+    const btnPrevPuzzle = document.getElementById('btn-prev-puzzle');
+    const btnNextPuzzle = document.getElementById('btn-next-puzzle');
+    if (btnPrevPuzzle) {
+      btnPrevPuzzle.addEventListener('click', () => {
+        let num = parseInt(this.dom.puzzleNumberInput.value, 10) || 1;
+        if (num > 1) {
+          num--;
+          this.dom.puzzleNumberInput.value = num;
+          this.dom.puzzleNumberInput.dispatchEvent(new Event('change'));
+        }
+      });
+    }
+    if (btnNextPuzzle) {
+      btnNextPuzzle.addEventListener('click', () => {
+        let num = parseInt(this.dom.puzzleNumberInput.value, 10) || 1;
+        num++;
+        this.dom.puzzleNumberInput.value = num;
+        this.dom.puzzleNumberInput.dispatchEvent(new Event('change'));
+      });
+    }
+
     // Filtros de búsqueda
     this.dom.searchLevelFilter.addEventListener('change', () => this.updateSearchResults());
     this.dom.searchStatusFilter.addEventListener('change', () => this.updateSearchResults());
