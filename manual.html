@@ -17,6 +17,10 @@
   <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    code {
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
 
     @media print {
       body {
@@ -296,9 +300,17 @@
           <p>
             • <strong>Botón de Azar (🎲)</strong>: Genera una semilla matemática aleatoria con un solo clic.
           </p>
-          <p>
-            • <strong>Importación de Cadenas de 81 Caracteres</strong>: Puedes pegar directamente en el campo de semilla una cadena completa de 81 caracteres de dígitos y puntos (ej. <code>...26.7.168..7..9.19...45..82.1...4...46.29...5...3.28..93...74.4..5..367.3.18...</code>). El sistema detectará automáticamente el tablero completo, calculará su solución y lo cargará listo para jugar o grabar.
-          </p>
+                    <div class="space-y-1.5">
+            <p>
+              • <strong>Importación de Cadenas de 81 Caracteres</strong>: Puedes pegar directamente en el campo de semilla una cadena completa de 81 caracteres de dígitos y puntos (ejemplo):
+            </p>
+            <div class="p-2 bg-blue-100/70 border border-blue-200/80 rounded font-mono text-[11px] text-blue-900 break-all select-all leading-relaxed shadow-2xs">
+              ...26.7.168..7..9.19...45..82.1...4...46.29...5...3.28..93...74.4..5..367.3.18...
+            </div>
+            <p>
+              El sistema detectará automáticamente el tablero completo, calculará su solución y lo cargará listo para jugar o grabar.
+            </p>
+          </div>
           <p>
             • <strong>Compartir la misma partida</strong>: Al proponer una semilla, la URL del navegador se sincroniza al instante (ej. <code>?semilla=40837&nivel=facil</code>). Copia y envía ese enlace a quien desees para competir o comparar deducciones sobre el mismo puzle exacto.
           </p>
