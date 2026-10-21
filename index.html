@@ -20,6 +20,19 @@
   <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css?v=1.3">
+  <script>
+    window.openTopLogoModal = function() {
+      var modal = document.getElementById('modal-top-logo');
+      if (modal) modal.classList.remove('hidden');
+    };
+    window.closeTopLogoModal = function() {
+      var modal = document.getElementById('modal-top-logo');
+      if (modal) modal.classList.add('hidden');
+    };
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') window.closeTopLogoModal();
+    });
+  </script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 antialiased flex flex-col items-center p-2 sm:p-4 md:p-6">
 
@@ -28,9 +41,14 @@
     
     <!-- Barra de Título de la Ventana -->
     <div class="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-4 py-2.5 flex items-center justify-between text-white select-none">
-      <div id="btn-top-logo" onclick="window.openTopLogoModal()" class="flex items-center space-x-2.5 cursor-pointer hover:opacity-90 transition group select-none py-0.5 px-1.5 rounded hover:bg-slate-700/60" title="Haz clic para ver nuestro logotipo oficial">
-        <img src="icons/icon-192.png" alt="Top Sudoku" class="w-6 h-6 rounded-md shadow object-contain border border-amber-400/50 group-hover:scale-105 transition pointer-events-none">
-        <h1 class="font-bold text-sm tracking-wide group-hover:text-amber-300 transition">TOP SUDOKU — Escuela y Solucionador Lógico</h1>
+      <div id="btn-top-logo" onclick="window.openTopLogoModal()" class="flex items-center space-x-2.5 cursor-pointer hover:opacity-95 transition group select-none py-1 px-2 rounded-lg hover:bg-slate-700/80 active:scale-95" title="Haz clic para ver nuestro logotipo oficial en alta resolución">
+        <img src="icons/icon-192.png" alt="Top Sudoku" onclick="window.openTopLogoModal()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg shadow-md object-contain border border-amber-400/60 group-hover:scale-110 transition cursor-pointer">
+        <div class="cursor-pointer" onclick="window.openTopLogoModal()">
+          <h1 class="font-bold text-sm tracking-wide group-hover:text-amber-300 transition flex items-center gap-1.5">
+            <span>TOP SUDOKU</span>
+            <span class="text-xs text-amber-400/80 font-normal hidden sm:inline">— Escuela y Solucionador Lógico</span>
+          </h1>
+        </div>
       </div>
       <div class="flex items-center space-x-3 text-xs">
         <a href="manual.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition" title="Manual del Usuario y Escuela Lógica"><span>📖</span><span>Manual</span></a>
