@@ -136,11 +136,33 @@
           <span>✨</span> 3. Candidato Único (Casillas Doradas) y Sombreado Focal
         </h2>
         <p class="mb-2">
-          Conforme colocas números en el tablero de juego, el tablero de posibilidades descarta al instante los números que ya no pueden repetirse en esa fila, columna o caja 3x3.
+          Conforme colocas números en el tablero de juego, el motor descarta al instante los números que ya no pueden repetirse en esa fila, columna o caja 3x3.
         </p>
+
+        <!-- Nueva Opción: Superponer Posibles -->
+        <div class="p-4 bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-purple-200 rounded-xl my-3 space-y-2 text-xs text-purple-950 shadow-sm">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="font-bold text-sm text-purple-900 flex items-center gap-1.5">
+              <span>🌟</span>
+              <span>Nueva Opción: Superponer Posibles en el Tablero de Solución (Modo Asistido Interactivo)</span>
+            </span>
+            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-purple-200 text-purple-800 rounded-full">¡Novedad!</span>
+          </div>
+          <p class="text-slate-700 leading-relaxed">
+            Además de consultar el tablero espejo derecho de posibilidades, ahora puedes <strong>ver todos los candidatos directamente dentro de las casillas vacías del tablero principal de juego</strong> mientras resuelves.
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-700 ml-2">
+            <li><strong>Cómo activarlo o desactivarlo:</strong> Puedes conmutarlo al vuelo pulsando el botón <strong>«🔍 Superponer posibles»</strong> situado en la cabecera del tablero, o marcando la casilla de verificación en el panel de opciones desplegable. Tu preferencia se memoriza automáticamente en tu navegador.</li>
+            <li><strong>Resolver y ver candidatos al mismo tiempo:</strong> Cada celda vacía muestra una mini-rejilla con los números válidos en tiempo real.</li>
+            <li><strong>Detección de Candidato Único en Ámbar Dorado:</strong> Cuando en una celda vacía solo cabe un único número posible, se resalta en <strong>color amarillo / dorado resplandeciente</strong> con el número destacado en grande. ¡Una certeza matemática para avanzar sin dudar!</li>
+            <li><strong>Colocación directa con un clic o toque:</strong> Puedes pulsar directamente sobre cualquiera de los pequeños números candidatos dentro de la casilla para colocarlo inmediatamente, o usar el teclado habitual.</li>
+            <li><strong>Recálculo reactivo en vivo:</strong> En cuanto colocas un número, las posibilidades de todas las celdas vecinas de su fila, columna y cuadrante 3x3 se recalculan y actualizan al instante.</li>
+          </ul>
+        </div>
+
         <div class="bg-amber-100/80 border border-amber-300 rounded-lg p-4 my-3 text-amber-950 text-xs leading-relaxed">
           <strong class="font-bold text-sm block mb-1">🌟 La Regla de Oro del Candidato Único (Naked Single):</strong>
-          Cuando en una celda del tablero derecho <strong>solo queda un único número posible</strong>, la casilla se ilumina en color dorado resplandeciente. Eso significa que ese número es una certeza matemática incuestionable: colócalo en el tablero izquierdo sin temor a equivocarte.
+          Cuando en una celda (ya sea en el tablero espejo o en el tablero con posibles superpuestos) <strong>solo queda un único número posible</strong>, la casilla se ilumina en color dorado resplandeciente. Eso significa que ese número es una certeza matemática incuestionable: colócalo sin temor a equivocarte.
         </div>
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
           <strong class="font-bold text-slate-800 block mb-1">🎯 Sombreado Focal de Visión Periférica:</strong>
@@ -194,11 +216,16 @@
           <span>🎮</span> 5. Controles en Ordenador, Portátil, Móvil y Tablet
         </h2>
         <div class="space-y-3">
+          <div class="p-3 bg-emerald-50/80 border border-emerald-200 rounded-lg text-xs space-y-1 text-emerald-950">
+            <strong class="font-bold text-sm block text-emerald-900">⚡ Auto-Inicio Transparente de Partida:</strong>
+            No es obligatorio pulsar previamente el botón verde <strong>«iniciar»</strong>: al hacer clic en cualquier casilla vacía y teclear o pulsar un número (del 1 al 9), el sistema auto-inicia automáticamente la partida, arranca el cronómetro y registra la hora de comienzo de forma inmediata.
+          </div>
+
           <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5">
             <p class="font-bold text-slate-800 text-sm">💻 En Ordenador o Portátil (Teclado Físico y Ratón):</p>
             <ul class="list-disc list-inside space-y-1 text-slate-600 ml-2">
               <li><strong>Navegación</strong>: Haz clic en cualquier casilla o usa las <strong>Flechas de dirección</strong> (← ↑ ↓ →).</li>
-              <li><strong>Introducir números</strong>: Pulsa las teclas del <strong>1 al 9</strong> del teclado numérico o alfanumérico.</li>
+              <li><strong>Introducir números</strong>: Pulsa las teclas del <strong>1 al 9</strong> del teclado numérico o alfanumérico, o haz clic en los números del teclado en pantalla. Si tienes activa la opción de superponer posibles, también puedes hacer clic directo en el candidato diminuto deseado.</li>
               <li><strong>Auto-avance inteligente</strong>: Al colocar un número válido, el cursor salta automáticamente a la siguiente casilla vacía disponible.</li>
               <li><strong>Borrar</strong>: Pulsa la tecla <strong>Supr</strong>, <strong>Retroceso</strong> o el <strong>0</strong> para vaciar una casilla rellenada por ti.</li>
             </ul>
@@ -242,7 +269,7 @@
               </tr>
               <tr>
                 <td class="p-3 font-mono font-bold text-emerald-700 bg-slate-50">iniciar</td>
-                <td class="p-3">Bloquea las pistas iniciales en color azul, arranca el cronómetro de partida y activa la validación en caliente para comenzar a resolver.</td>
+                <td class="p-3">Bloquea las pistas iniciales en color azul, arranca el cronómetro de partida y activa la validación en caliente para comenzar a resolver (también se auto-inicia al teclear el primer número).</td>
               </tr>
               <tr>
                 <td class="p-3 font-mono font-bold text-amber-800 bg-slate-50">posibles</td>
@@ -261,8 +288,8 @@
                 <td class="p-3">Detiene la partida en curso o el modo de planteamiento y devuelve la aplicación al estado de reposo inicial.</td>
               </tr>
               <tr>
-                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">cerrar</td>
-                <td class="p-3">Cierra el juego activo o la ventana de la aplicación.</td>
+                <td class="p-3 font-mono font-bold text-slate-700 bg-slate-50">cerrar / 🚪 Salir</td>
+                <td class="p-3">Solicita confirmación si hay jugadas activas para no perder progreso, detiene el cronómetro y cierra la aplicación o despliega la pantalla completa de salida limpia (*exit-screen*).</td>
               </tr>
             </tbody>
           </table>

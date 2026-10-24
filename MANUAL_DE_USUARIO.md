@@ -50,38 +50,45 @@ La pantalla principal de Top-Sudoku presenta una arquitectura única de **dos ta
 
 ## 3. El Secreto Pedagógico: Posibilidades por Cuadro y Candidato Único
 
-### ¿Cómo te ayuda a pensar el tablero de Posibilidades?
-Conforme colocas un número en el tablero izquierdo, el tablero derecho **actualiza instantáneamente los candidatos** de todas las celdas afectadas, tachando mentalmente las opciones que ya no son posibles.
+### 3.1. Tablero Espejo (Pantalla Derecha)
+Conforme colocas un número en el tablero de juego (izquierdo), el tablero derecho **actualiza instantáneamente los candidatos** de todas las celdas afectadas, tachando las opciones que ya no son posibles.
 
-### La Detección de Candidato Único (*Naked Single*)
-Esta es la técnica fundamental de la escuela Top-Sudoku:
-- Cuando en una casilla del tablero derecho **solo queda un único número posible**, esa celda se resalta automáticamente en **color amarillo / dorado resplandeciente**.
-- **Regla de oro**: Si una casilla solo tiene un candidato posible, **ese número es una certeza matemática**. Colócalo en el tablero izquierdo sin miedo, porque no existe ninguna otra opción válida.
-
-Al colocar ese número, verás cómo se desbloquean nuevas casillas doradas en cadena por todo el tablero, enseñándote a resolver sudokus complejos por simple descarte lógico.
+### 3.2. 🌟 Nueva Opción: Superponer Posibles en la Pantalla de Solución
+Además de consultar el tablero espejo derecho, Top-Sudoku incorpora una potente opción pedagógica: **superponer los candidatos calculados directamente dentro de las propias casillas vacías del tablero principal de juego**.
+- **Cómo activarlo**: Puedes alternar esta opción en cualquier momento mediante:
+  1. El botón de acceso rápido en la cabecera del tablero: `[🔍 Superponer posibles]`.
+  2. La casilla de verificación en el panel de opciones: `[x] Superponer posibles en pantalla de solución`.
+  3. Tu preferencia se guarda automáticamente en memoria (`localStorage`) para recordarla en tus siguientes partidas.
+- **Resolver y ver posibilidades simultáneamente**: Mientras juegas y resuelves, las casillas vacías muestran en tiempo real y en formato compacto todos los números válidos para esa celda.
+- **Candidato Único (*Naked Single*)**: Cuando en una casilla vacía solo cabe un único número posible, se resalta automáticamente en **color amarillo / ámbar dorado** con el número en grande. ¡Es una certeza matemática sin riesgo de error!
+- **Colocación con un solo clic**: Puedes pulsar directamente con el ratón o el dedo sobre cualquiera de los números candidatos superpuestos en la casilla para colocarlo inmediatamente, o bien teclearlo.
+- **Recálculo reactivo en vivo**: Al colocar un número, las posibilidades de todas las casillas vacías de su fila, columna y submatriz 3x3 se recalculan y actualizan al vuelo.
 
 ---
 
 ## 4. Validación en Caliente contra Errores
 
-Top-Sudoku incorpora un validador en tiempo real:
-- Si intentas colocar un número que ya existe en la misma fila, columna o cuadrante 3x3, **el sistema rechaza la jugada de inmediato** emitiendo una alerta visual.
-- Esto te impide arrastrar errores durante media hora para descubrir al final que el sudoku no cuadra.
+Top-Sudoku incorpora un validador en tiempo real según el criterio seleccionado en el panel:
+- **Resultado final (Solución única)**: Comprueba el número contra la solución matemática definitiva del sudoku. Si no coincide, lo rechaza de inmediato con parpadeo rojo, evitando callejones sin salida tardíos (*deadlocks*).
+- **Situación actual (Reglas clásicas)**: Permite ensayo y deducción libre, comprobando únicamente si el número colisiona con fila, columna o caja 3x3 presentes.
 
 ---
 
 ## 5. Controles y Modos de Juego (PC y Móvil)
 
+### ⚡ Auto-Inicio Transparente de Partida
+No es obligatorio pulsar previamente el botón verde "iniciar": al hacer clic en cualquier casilla vacía y teclear o pulsar un número (del 1 al 9), el sistema auto-inicia automáticamente la partida, arranca el cronómetro y registra la hora de inicio de forma inmediata.
+
 ### 💻 En Ordenador (PC / Portátil)
 - **Navegación por casillas**: Clic con el ratón o con las **Flechas del teclado** (← ↑ ↓ →).
-- **Colocar un número**: Pulsa las teclas numéricas del **1 al 9**.
-- **Auto-avance inteligente**: Al colocar un número válido, el cursor avanza automáticamente a la siguiente casilla vacía para agilizar la mecanización.
-- **Borrar**: Tecla **Supr**, **Retroceso** o la barra espaciadora.
+- **Colocar un número**: Pulsa las teclas numéricas del **1 al 9** (teclado alfanumérico o teclado numérico NumPad), o pulsa directamente los botones del teclado en pantalla bajo la cuadrícula.
+- **Auto-avance inteligente**: Al colocar un número válido, el cursor avanza automáticamente a la siguiente casilla vacía para agilizar la resolución.
+- **Borrar**: Tecla **Supr**, **Retroceso**, el **0** o el botón "Borrar" del teclado inferior.
 
 ### 📱 En Smartphone o Tablet
 - En pantallas móviles estrechas, la interfaz conmuta a un cómodo selector de pestañas superiores:
-  - Pestaña **🎮 Tablero de Juego**: Muestra el tablero para rellenar con el teclado táctil en pantalla.
-  - Pestaña **🔍 Posibilidades por Cuadro**: Te permite consultar el mapa completo de candidatos y casillas doradas con un solo toque.
+  - Pestaña **🎮 Tablero de Juego**: Muestra el tablero para rellenar con el teclado táctil en pantalla y la opción de superponer posibles activa.
+  - Pestaña **🔍 Posibilidades por Cuadro**: Te permite consultar el mapa analítico completo de candidatos en espejo con un solo toque.
 
 ---
 
@@ -94,8 +101,12 @@ Debajo del tablero izquierdo se encuentra el panel de mando operativo:
 | **`plantear`** | Activa el modo de diseño para copiar un sudoku desde un periódico, revista o libro. |
 | **`grabar`** | Guarda el sudoku actual en tu banco de datos local bajo el nivel y número seleccionados. |
 | **`buscar`** | Abre la ventana de búsqueda con filtros (todos, no resueltos, resueltos) y récords de tiempo. |
-| **`limpiar`** | Borra todos los números colocados por ti, dejando el sudoku en su estado inicial para empezar de cero. |
+| **`iniciar`** | Arranca formalmente el cronómetro y prepara el tablero (también se auto-inicia al teclear el primer número). |
+| **`posibles`** | Conmuta el cálculo y despliegue del tablero espejo de posibilidades de la derecha. |
 | **`resolver`** | La máquina resuelve automáticamente el sudoku completo mediante el algoritmo de Backtracking. |
+| **`reiniciar`** | Restaura la partida a su planteamiento inicial limpio y pone el cronómetro a cero. |
+| **`cancelar`** | Cancela los cambios o el planteamiento y devuelve la aplicación al estado de reposo inicial. |
+| **`cerrar` / `🚪 Salir`** | Solicita confirmación si hay jugadas activas, detiene el cronómetro y cierra la aplicación o despliega la pantalla completa de salida limpia (*exit-screen*). |
 
 ---
 
