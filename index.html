@@ -108,10 +108,10 @@
     <!-- Pestañas para Pantallas Pequeñas (Móvil Portrait) -->
     <div class="flex lg:hidden bg-slate-200 p-1 border-b border-slate-300 text-xs font-semibold">
       <button id="tab-game" class="flex-1 py-2 rounded bg-blue-600 text-white shadow-sm transition">
-        🎮 Tablero de Juego
+        <span>🎮</span> <span data-i18n="tab_game">Tablero de Juego</span>
       </button>
       <button id="tab-possibilities" class="flex-1 py-2 rounded bg-white text-slate-700 transition">
-        🔍 Posibilidades por Cuadro
+        <span>🔍</span> <span data-i18n="tab_possibilities">Posibilidades por Cuadro</span>
       </button>
     </div>
 
@@ -177,7 +177,7 @@
         <!-- Selector de Dificultad, Semilla y Colección -->
         <div class="bg-slate-50 border border-slate-200 rounded p-3 text-xs flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center space-x-3 flex-wrap">
-            <span class="font-bold text-slate-700">Nivel:</span>
+            <span class="font-bold text-slate-700" data-i18n="label_diff_level">Nivel:</span>
             <label class="inline-flex items-center space-x-1 cursor-pointer">
               <input type="radio" name="nivel" value="facil" checked class="text-blue-600 focus:ring-0">
               <span class="text-slate-700" data-i18n="diff_facil">fácil</span>
@@ -237,16 +237,16 @@
         <div class="bg-amber-50/70 border border-amber-200/90 rounded px-3 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-2xs">
           <div class="flex items-center space-x-1.5 font-bold text-slate-700">
             <span class="text-amber-600">🛡️</span>
-            <span>Rechazo de casilla:</span>
+            <span data-i18n="label_box_rejection">Rechazo de casilla:</span>
           </div>
           <div class="flex items-center space-x-4 flex-wrap">
             <label class="inline-flex items-center space-x-1.5 cursor-pointer select-none" title="Comprobación contra la solución definitiva: rechaza el número si no coincide con el resultado final del Sudoku (Escuela de lógica: evita bifurcaciones erróneas y callejones sin salida).">
               <input type="radio" name="criterio_rechazo" value="solucion" checked class="text-blue-600 focus:ring-0">
-              <span class="font-semibold text-slate-800">Resultado final <span class="text-slate-500 font-normal">(Solución única)</span></span>
+              <span class="font-semibold text-slate-800" data-i18n="criterion_unique_full">Resultado final <span class="text-slate-500 font-normal">(Solución única)</span></span>
             </label>
             <label class="inline-flex items-center space-x-1.5 cursor-pointer select-none" title="Comprobación contra el tablero actual: rechaza el número únicamente si colisiona con fila, columna o caja 3x3 en la situación actual (Reglas clásicas: permite deducción libre y ensayo sin desvelar la solución).">
               <input type="radio" name="criterio_rechazo" value="situacion_actual" class="text-blue-600 focus:ring-0">
-              <span class="font-semibold text-slate-800">Situación actual <span class="text-slate-500 font-normal">(Reglas clásicas)</span></span>
+              <span class="font-semibold text-slate-800" data-i18n="criterion_current_full">Situación actual <span class="text-slate-500 font-normal">(Reglas clásicas)</span></span>
             </label>
           </div>
         </div>
@@ -255,7 +255,7 @@
         <div class="bg-indigo-50/70 border border-indigo-200/90 rounded px-3 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-2xs">
           <div class="flex items-center space-x-1.5 font-bold text-slate-700">
             <span class="text-indigo-600">🔍</span>
-            <span>Visualización en pantalla de solución:</span>
+            <span data-i18n="label_solution_display">Visualización en pantalla de solución:</span>
           </div>
           <div class="flex items-center space-x-3 flex-wrap">
             <label class="inline-flex items-center space-x-2 cursor-pointer select-none bg-white px-2.5 py-1 rounded border border-indigo-300 hover:bg-indigo-100/60 transition shadow-2xs" title="Superpone los candidatos posibles en tiempo real directamente dentro de las casillas vacías mientras resuelves el Sudoku">
@@ -352,16 +352,16 @@
           <input type="text" id="modal-seed-input" placeholder="Ej. 40837" 
             class="w-24 bg-white border border-blue-300 rounded px-2 py-1 font-mono font-bold text-blue-900 text-center">
         </div>
-        <button id="btn-modal-load-seed" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow-xs transition cursor-pointer">
+        <button id="btn-modal-load-seed" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow-xs transition cursor-pointer" data-i18n="btn_generate_and_play">
           Generar y Jugar
         </button>
       </div>
 
       <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap gap-3">
         <div class="flex-1 min-w-[130px]">
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Dificultad:</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="label_filter_difficulty">Dificultad:</label>
           <select id="search-level-filter" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800">
-            <option value="todos">Todos los niveles</option>
+            <option value="todos" data-i18n="opt_all_levels">Todos los niveles</option>
             <option value="facil" data-i18n="diff_facil">Fácil</option>
             <option value="medio" data-i18n="diff_medio">Medio</option>
             <option value="dificil" data-i18n="diff_dificil">Difícil</option>
@@ -370,11 +370,11 @@
         </div>
 
         <div class="flex-1 min-w-[130px]">
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Estado:</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="label_filter_status">Estado:</label>
           <select id="search-status-filter" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800">
-            <option value="todos">Todos los sudokus</option>
-            <option value="no_resueltos">Solo no resueltos</option>
-            <option value="resueltos">Solo resueltos</option>
+            <option value="todos" data-i18n="opt_all_sudokus">Todos los sudokus</option>
+            <option value="no_resueltos" data-i18n="opt_state_unsolved">Solo no resueltos</option>
+            <option value="resueltos" data-i18n="opt_state_solved">Solo resueltos</option>
           </select>
         </div>
       </div>
@@ -393,7 +393,7 @@
       <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white px-4 py-3 flex items-center justify-between select-none">
         <div class="flex items-center space-x-2">
           <span class="text-base">📷</span>
-          <h3 class="font-bold text-sm tracking-wide">Escanear Sudoku desde Imagen o Cámara</h3>
+          <h3 class="font-bold text-sm tracking-wide" data-i18n="ocr_title">Escanear Sudoku desde Imagen o Cámara</h3>
         </div>
         <button id="btn-close-ocr" class="text-slate-400 hover:text-white font-bold text-xl leading-none cursor-pointer">&times;</button>
       </div>
@@ -404,8 +404,8 @@
         <!-- PASO 1: Selección o Captura de Imagen -->
         <div id="ocr-step-upload" class="space-y-4">
           <div class="text-center space-y-1">
-            <h4 class="font-bold text-slate-800 text-sm">Elige cómo cargar la imagen del Sudoku</h4>
-            <p class="text-xs text-slate-500">Procesado 100% en tu navegador de forma privada, rápida y sin enviar imágenes a servidores externos.</p>
+            <h4 class="font-bold text-slate-800 text-sm" data-i18n="ocr_step1_title">Elige cómo cargar la imagen del Sudoku</h4>
+            <p class="text-xs text-slate-500" data-i18n="ocr_step1_desc">Procesado 100% en tu navegador de forma privada, rápida y sin enviar imágenes a servidores externos.</p>
           </div>
 
           <!-- Opciones principales -->
@@ -413,31 +413,31 @@
             <!-- Botón Cámara (Mobile friendly) -->
             <label class="flex flex-col items-center justify-center p-5 bg-blue-50/80 hover:bg-blue-100/80 border-2 border-dashed border-blue-300 rounded-xl cursor-pointer transition text-center group shadow-2xs">
               <span class="text-3xl mb-1 group-hover:scale-110 transition">📸</span>
-              <span class="font-bold text-xs text-blue-900">Hacer Foto con la Cámara</span>
-              <span class="text-[11px] text-blue-700/80 mt-0.5">Captura directa desde tu móvil o tablet</span>
+              <span class="font-bold text-xs text-blue-900" data-i18n="ocr_btn_camera">Hacer Foto con la Cámara</span>
+              <span class="text-[11px] text-blue-700/80 mt-0.5" data-i18n="ocr_btn_camera_desc">Captura directa desde tu móvil o tablet</span>
               <input type="file" id="ocr-camera-input" accept="image/*" capture="environment" class="hidden">
             </label>
 
             <!-- Botón Subir Archivo -->
             <label class="flex flex-col items-center justify-center p-5 bg-indigo-50/80 hover:bg-indigo-100/80 border-2 border-dashed border-indigo-300 rounded-xl cursor-pointer transition text-center group shadow-2xs">
               <span class="text-3xl mb-1 group-hover:scale-110 transition">📁</span>
-              <span class="font-bold text-xs text-indigo-900">Subir Archivo de Imagen</span>
-              <span class="text-[11px] text-indigo-700/80 mt-0.5">PNG, JPG, WebP o captura de pantalla</span>
+              <span class="font-bold text-xs text-indigo-900" data-i18n="ocr_btn_upload">Subir Archivo de Imagen</span>
+              <span class="text-[11px] text-indigo-700/80 mt-0.5" data-i18n="ocr_btn_upload_desc">PNG, JPG, WebP o captura de pantalla</span>
               <input type="file" id="ocr-file-input" accept="image/*" class="hidden">
             </label>
           </div>
 
           <!-- Zona de Drag & Drop y Pegar Portapapeles (Ctrl+V) -->
           <div id="ocr-drop-zone" class="border border-slate-200 bg-slate-50/80 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-100 transition text-xs text-slate-600 space-y-1">
-            <p class="font-semibold text-slate-700">O también puedes arrastrar una imagen aquí o pegar directamente del portapapeles (<kbd class="px-1.5 py-0.5 bg-white border border-slate-300 rounded text-[10px] font-mono shadow-2xs">Ctrl + V</kbd>)</p>
-            <p class="text-[11px] text-slate-400">Ideal si has hecho una captura de un periódico o web</p>
+            <p class="font-semibold text-slate-700" data-i18n="ocr_drop_prompt">O también puedes arrastrar una imagen aquí o pegar directamente del portapapeles (<kbd class="px-1.5 py-0.5 bg-white border border-slate-300 rounded text-[10px] font-mono shadow-2xs">Ctrl + V</kbd>)</p>
+            <p class="text-[11px] text-slate-400" data-i18n="ocr_drop_subprompt">Ideal si has hecho una captura de un periódico o web</p>
           </div>
 
           <!-- Botón de Demostración Instantánea -->
           <div class="pt-2 text-center">
             <button id="btn-ocr-sample" class="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold rounded-lg text-xs shadow-xs transition inline-flex items-center gap-2 cursor-pointer">
               <span>⚡</span>
-              <span>Probar con Sudoku de Ejemplo (Demostración instantánea)</span>
+              <span data-i18n="ocr_btn_demo">Probar con Sudoku de Ejemplo (Demostración instantánea)</span>
             </button>
           </div>
         </div>
@@ -449,8 +449,8 @@
             <span class="absolute text-xl">🔍</span>
           </div>
           <div>
-            <h4 id="ocr-progress-title" class="font-bold text-slate-800 text-sm">Analizando imagen y cuadrícula...</h4>
-            <p id="ocr-progress-desc" class="text-xs text-slate-500 mt-1">Preparando visión artificial y extrayendo 81 casillas...</p>
+            <h4 id="ocr-progress-title" class="font-bold text-slate-800 text-sm" data-i18n="ocr_progress_title">Analizando imagen y cuadrícula...</h4>
+            <p id="ocr-progress-desc" class="text-xs text-slate-500 mt-1" data-i18n="ocr_progress_desc">Preparando visión artificial y extrayendo 81 casillas...</p>
           </div>
           <div class="max-w-md mx-auto w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
             <div id="ocr-progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 25%"></div>
@@ -463,13 +463,13 @@
             <div>
               <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
                 <span>📋</span>
-                <span>Revisión de Números Detectados</span>
+                <span data-i18n="ocr_review_title">Revisión de Números Detectados</span>
               </h4>
-              <p class="text-xs text-slate-500">Comprueba la cuadrícula leída frente a la imagen original antes de cargar.</p>
+              <p class="text-xs text-slate-500" data-i18n="ocr_review_desc">Comprueba la cuadrícula leída frente a la imagen original antes de cargar.</p>
             </div>
             <div id="ocr-validation-badge" class="px-2.5 py-1 rounded text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
               <span>✅</span>
-              <span id="ocr-validation-text">Solución única garantizada</span>
+              <span id="ocr-validation-text" data-i18n="ocr_solution_guaranteed">Solución única garantizada</span>
             </div>
           </div>
 
@@ -477,8 +477,8 @@
             <!-- Columna Izquierda: Imagen Recortada / Binarizada -->
             <div class="space-y-2">
               <div class="text-xs font-bold text-slate-700 flex items-center justify-between">
-                <span>Foto procesada (Cuadrícula):</span>
-                <span class="text-slate-400 font-normal">Original</span>
+                <span data-i18n="ocr_processed_label">Foto procesada (Cuadrícula):</span>
+                <span class="text-slate-400 font-normal" data-i18n="ocr_original">Original</span>
               </div>
               <div class="border border-slate-300 rounded-lg overflow-hidden bg-slate-100 max-h-[300px] flex items-center justify-center shadow-inner">
                 <canvas id="ocr-preview-canvas" class="max-w-full max-h-[300px] object-contain"></canvas>
@@ -488,7 +488,7 @@
             <!-- Columna Derecha: Cuadrícula Interactiva 9x9 con Teclado de Corrección Rápida -->
             <div class="space-y-2">
               <div class="text-xs font-bold text-slate-700 flex items-center justify-between">
-                <span>Cuadrícula Detectada (Haz clic para editar):</span>
+                <span data-i18n="ocr_detected_label">Cuadrícula Detectada (Haz clic para editar):</span>
                 <span id="ocr-clues-count" class="text-blue-700 font-semibold">-- pistas</span>
               </div>
 
@@ -510,21 +510,21 @@
                 <button data-ocr-val="7" class="ocr-key w-7 h-7 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-xs text-slate-800 shadow-2xs">7</button>
                 <button data-ocr-val="8" class="ocr-key w-7 h-7 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-xs text-slate-800 shadow-2xs">8</button>
                 <button data-ocr-val="9" class="ocr-key w-7 h-7 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-xs text-slate-800 shadow-2xs">9</button>
-                <button data-ocr-val="0" class="ocr-key px-2 h-7 bg-rose-50 hover:bg-rose-100 border border-rose-300 rounded font-bold text-[11px] text-rose-700 shadow-2xs">Borrar</button>
+                <button data-ocr-val="0" class="ocr-key px-2 h-7 bg-rose-50 hover:bg-rose-100 border border-rose-300 rounded font-bold text-[11px] text-rose-700 shadow-2xs" data-i18n="ocr_keypad_delete">Borrar</button>
               </div>
             </div>
           </div>
 
           <!-- Botones de Acción Finales -->
           <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-200">
-            <button id="btn-ocr-rescan" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded text-xs font-semibold transition cursor-pointer">
+            <button id="btn-ocr-rescan" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded text-xs font-semibold transition cursor-pointer" data-i18n="ocr_btn_rescan">
               🔄 Escanear Otra Imagen
             </button>
             <div class="flex items-center space-x-2">
-              <button id="btn-ocr-load-and-save" class="px-3.5 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 border border-blue-300 rounded text-xs font-bold transition shadow-xs cursor-pointer">
+              <button id="btn-ocr-load-and-save" class="px-3.5 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 border border-blue-300 rounded text-xs font-bold transition shadow-xs cursor-pointer" data-i18n="ocr_btn_load_save">
                 💾 Cargar y Guardar en Colección
               </button>
-              <button id="btn-ocr-load-board" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold transition shadow-xs cursor-pointer">
+              <button id="btn-ocr-load-board" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold transition shadow-xs cursor-pointer" data-i18n="ocr_btn_load_board">
                 🎮 Cargar en el Tablero
               </button>
             </div>
@@ -542,14 +542,14 @@
       <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">
         ?
       </div>
-      <p id="confirm-message" class="text-xs text-slate-700 font-semibold mb-5 leading-relaxed">
+      <p id="confirm-message" class="text-xs text-slate-700 font-semibold mb-5 leading-relaxed" data-i18n="confirm_generic_msg">
         ¿Deseas continuar?
       </p>
       <div class="flex items-center justify-center space-x-3 text-xs font-bold">
-        <button id="btn-confirm-yes" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded shadow transition">
+        <button id="btn-confirm-yes" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded shadow transition" data-i18n="btn_confirm_yes">
           Sí, continuar
         </button>
-        <button id="btn-confirm-no" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded transition">
+        <button id="btn-confirm-no" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded transition" data-i18n="btn_confirm_no">
           Cancelar
         </button>
       </div>
@@ -558,16 +558,16 @@
 
   <!-- Pie de página discreto -->
   <footer class="mt-4 text-center text-xs text-slate-500 pb-4">
-    <span>Top-Sudoku © 2026 — Guillermo Tudela Soler</span>
+    <span data-i18n="footer_copyright">Top-Sudoku © 2026 — Guillermo Tudela Soler</span>
     <span class="mx-2">•</span>
-    <a href="manual.html" class="hover:text-blue-600 underline font-semibold">Manual de Usuario</a>
+    <a href="manual.html" class="hover:text-blue-600 underline font-semibold" data-i18n="footer_manual">Manual de Usuario</a>
     <span class="mx-2">•</span>
     <a href="privacidad.html" class="hover:text-blue-600 underline" data-i18n="footer_privacy">Política de Privacidad</a>
     <span class="mx-2">•</span>
     <a href="https://github.com/guitusol/top-sudoku" target="_blank" class="hover:text-blue-600 underline" data-i18n="footer_github">Código en GitHub</a>
     <span class="mx-2">•</span>
     <a id="footer-link-arena" href="https://guitusol.github.io/sudoku-arena/" target="_blank" class="text-cyan-700 hover:text-cyan-900 font-bold hover:underline inline-flex items-center gap-1 transition">
-      <span>⚔️</span> <span id="footer-text-arena">Sudoku Arena: Duelos & Competición</span>
+      <span>⚔️</span> <span id="footer-text-arena" data-i18n="footer_arena">Sudoku Arena: Duelos & Competición</span>
     </a>
   </footer>
 
@@ -579,26 +579,26 @@
       </div>
       
       <h2 class="text-xl font-black text-slate-900 mb-1" data-i18n="exit_title">Top-Sudoku Cerrado</h2>
-      <p class="text-xs font-semibold text-slate-500 mb-4">Has salido de la sesión con éxito.</p>
+      <p class="text-xs font-semibold text-slate-500 mb-4" data-i18n="exit_subtitle">Has salido de la sesión con éxito.</p>
       
       <div class="bg-amber-50 border border-amber-300 rounded-xl p-3.5 text-left text-xs text-amber-900 mb-5 shadow-2xs space-y-1">
         <div class="font-bold flex items-center gap-1.5 text-amber-950">
           <span>📱</span>
-          <span>Para salir por completo al escritorio:</span>
+          <span data-i18n="exit_desktop_tip">Para salir por completo al escritorio:</span>
         </div>
-        <p class="text-[11px] leading-relaxed text-amber-800/90">
-          Ya puedes <strong>cerrar esta pestaña</strong> del navegador o pulsar el botón <strong>Inicio / Salir</strong> de tu teléfono o teclado.
+        <p class="text-[11px] leading-relaxed text-amber-800/90" data-i18n="exit_desktop_desc">
+          Ya puedes cerrar esta pestaña del navegador o pulsar el botón Inicio / Salir de tu teléfono o teclado.
         </p>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-2.5 justify-center text-xs font-bold">
         <button id="btn-exit-try-close" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-2.5 px-4 rounded-xl transition cursor-pointer border border-slate-300 flex items-center justify-center gap-1.5 shadow-xs">
           <span>✕</span>
-          <span>Cerrar Pestaña / Atrás</span>
+          <span data-i18n="exit_btn_close">Cerrar Pestaña / Atrás</span>
         </button>
         <button id="btn-exit-resume" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-xl transition cursor-pointer shadow-md flex items-center justify-center gap-1.5">
           <span>🎮</span>
-          <span>Volver a Jugar</span>
+          <span data-i18n="exit_btn_resume">Volver a Jugar</span>
         </button>
       </div>
     </div>
@@ -615,32 +615,32 @@
       </div>
       
       <div class="mb-2">
-        <span id="arena-promo-badge" class="inline-block px-3 py-1 bg-cyan-950/80 border border-cyan-400/60 rounded-full text-cyan-300 text-[11px] font-bold uppercase tracking-wider">
+        <span id="arena-promo-badge" class="inline-block px-3 py-1 bg-cyan-950/80 border border-cyan-400/60 rounded-full text-cyan-300 text-[11px] font-bold uppercase tracking-wider" data-i18n="arena_promo_badge">
           🏆 Nivel Avanzado Detectado
         </span>
       </div>
 
-      <h2 id="arena-promo-title" class="text-xl font-black text-white mb-3">
+      <h2 id="arena-promo-title" class="text-xl font-black text-white mb-3" data-i18n="arena_promo_title">
         ¿Listo para el siguiente reto?
       </h2>
 
-      <div id="arena-promo-message" class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-5 text-left bg-slate-800/70 border border-slate-700/70 p-4 rounded-xl">
+      <div id="arena-promo-message" class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-5 text-left bg-slate-800/70 border border-slate-700/70 p-4 rounded-xl" data-i18n="arena_promo_msg">
         Has completado este Sudoku con soltura. ¡Tu capacidad deductiva está lista para el siguiente nivel!
       </div>
 
       <div class="space-y-3">
         <a id="btn-arena-promo-go" href="https://guitusol.github.io/sudoku-arena/" target="_blank" class="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 px-5 rounded-xl shadow-lg shadow-cyan-500/20 transition cursor-pointer flex items-center justify-center gap-2 text-sm active:scale-98">
-          <span id="arena-promo-btn-text">⚔️ Probar Sudoku Arena Gratis</span>
+          <span id="arena-promo-btn-text" data-i18n="arena_promo_btn">⚔️ Probar Sudoku Arena Gratis</span>
           <span>→</span>
         </a>
 
         <div class="flex items-center justify-between text-xs text-slate-400 pt-1 flex-wrap gap-2">
           <label class="flex items-center gap-2 cursor-pointer select-none hover:text-slate-200">
             <input type="checkbox" id="chk-arena-promo-mute" class="rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-0">
-            <span id="arena-promo-mute-text">Recordármelo más adelante</span>
+            <span id="arena-promo-mute-text" data-i18n="arena_promo_mute">Recordármelo más adelante</span>
           </label>
           <button id="btn-arena-promo-stay" class="text-slate-400 hover:text-white underline transition cursor-pointer py-1">
-            <span id="arena-promo-stay-text">Seguir en Top Sudoku</span>
+            <span id="arena-promo-stay-text" data-i18n="arena_promo_stay">Seguir en Top Sudoku</span>
           </button>
         </div>
       </div>
@@ -779,17 +779,17 @@
       </div>
       
       <h2 class="text-xl font-black text-amber-400 mb-1">TOP SUDOKU</h2>
-      <p class="text-xs uppercase tracking-wider text-amber-300/80 font-bold mb-4">Escuela de Lógica & Solucionador Dual</p>
+      <p class="text-xs uppercase tracking-wider text-amber-300/80 font-bold mb-4" data-i18n="logo_modal_tagline">Escuela de Lógica & Solucionador Dual</p>
       
-      <p class="text-slate-100 font-semibold text-base leading-relaxed mb-6">
+      <p class="text-slate-100 font-semibold text-base leading-relaxed mb-6" data-i18n="logo_modal_text">
         Estamos encantados con nuestro Logotipo y no nos resistimos a enseñártelo. ¿Te gusta?
       </p>
       
       <div class="flex gap-3 justify-center">
-        <button onclick="alert('¡Muchas gracias! Nos alegra mucho que te guste.'); window.closeTopLogoModal();" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-2.5 px-4 rounded-xl shadow-lg transition cursor-pointer">
+        <button onclick="alert(window.I18N_TRANSLATIONS && window.I18N_TRANSLATIONS[localStorage.getItem('top_sudoku_lang') || 'es']?.logo_alert_thanks || '¡Muchas gracias! Nos alegra mucho que te guste.'); window.closeTopLogoModal();" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-2.5 px-4 rounded-xl shadow-lg transition cursor-pointer" data-i18n="logo_btn_love">
           ¡Me encanta! ❤️
         </button>
-        <button onclick="window.closeTopLogoModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer">
+        <button onclick="window.closeTopLogoModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 px-4 rounded-xl transition cursor-pointer" data-i18n="logo_btn_close">
           Cerrar
         </button>
       </div>

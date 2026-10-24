@@ -621,7 +621,7 @@ class SudokuApp {
     }
 
     if (this.mode === 'resuelto') {
-      this.setStatus('Sudoku resuelto. Pulsa "Reiniciar" o "Iniciar" para comenzar una nueva partida.', 'info');
+      this.setStatus(this.t('msg_game_solved_restart'), 'info');
       return;
     }
 
@@ -645,7 +645,7 @@ class SudokuApp {
     if (this.mode === 'plantear') {
       if (!this.engine.isValidMove(this.playGrid, row, col, num)) {
         this.flashCellError(row, col);
-        this.setStatus(`El número ${num} colisiona en fila, columna o caja 3x3.`, 'error');
+        this.setStatus(this.t('msg_collision_box', { num }), 'error');
         return;
       }
       this.playGrid[row][col] = num;
@@ -890,7 +890,7 @@ class SudokuApp {
     this.dom.elapsedTimeInput.value = '00:00';
     if (this.dom.seedInput) this.dom.seedInput.value = '';
 
-    this.setStatus(`Modo PLANTEAR activado: Introduce los números iniciales para el Sudoku #${nextNum} (${this.currentLevel.toUpperCase()}). Pulsa "Grabar" al terminar.`, 'info');
+    this.setStatus(this.t('msg_setup_mode_active', { nextNum, level: this.currentLevel.toUpperCase() }), 'info');
     this.updateBoardDisplay();
   }
 
@@ -900,14 +900,14 @@ class SudokuApp {
   handleGrabar() {
     const hasNumbers = this.initialGrid.some(row => row.some(n => n !== 0));
     if (!hasNumbers) {
-      alert('El tablero está vacío. Introduce al menos los números iniciales para poder grabarlo.');
+      alert(this.t('alert_board_empty'));
       return;
     }
 
     // Comprobar si el planteamiento tiene solución matemática válida antes de guardar
     const res = this.engine.solve(this.initialGrid);
     if (!res.solved) {
-      alert('Este planteamiento no tiene ninguna solución matemática válida. Revisa los números introducidos.');
+      alert(this.t('alert_no_math_solution'));
       this.setStatus(this.t('msg_no_math_solution'), 'error');
       return;
     }
@@ -948,7 +948,7 @@ class SudokuApp {
       this.mode = 'idle';
     }
 
-    this.setStatus(`Sudoku guardado con éxito en tu colección como #${num} (${puzzle.name}). ¡Queda archivado para el buscador!`, 'success');
+    this.setStatus(this.t('msg_saved_success', { num, name: puzzle.name }), 'success');
   }
 
   /**
@@ -1000,10 +1000,10 @@ class SudokuApp {
         const delBtn = e.target.closest('[data-action="delete"]');
         if (delBtn) {
           e.stopPropagation();
-          if (confirm(`¿Seguro que deseas eliminar "#${p.number} — ${p.name}" de tu colección?`)) {
+          if (confirm(this.t('confirm_delete_puzzle', { num: p.number, name: p.name }))) {
             this.storage.deletePuzzle(p.id);
             this.updateSearchResults();
-            this.setStatus(`Sudoku #${p.number} eliminado de tu colección.`, 'info');
+            this.setStatus(this.t('msg_deleted_puzzle', { num: p.number }), 'info');
           }
           return;
         }
@@ -1057,7 +1057,7 @@ class SudokuApp {
       if (firstInLevel) {
         this.loadPuzzle(firstInLevel.id);
       } else {
-        this.setStatus(`No hay sudokus guardados en nivel "${level.toUpperCase()}". Usa "Plantear" para crear uno.`, 'warn');
+        this.setStatus(this.t('msg_no_puzzles_level', { level: level.toUpperCase() }), 'warn');
       }
     }
   }
@@ -1068,7 +1068,7 @@ class SudokuApp {
    */
   handleIniciar() {
     if (this.mode === 'plantear') {
-      alert('Estás en modo "Plantear". Pulsa primero "Grabar" para guardar este planteamiento o "Cancelar".');
+      alert(this.t('alert_setup_in_progress'));
       return;
     }
 
@@ -1148,9 +1148,9 @@ class SudokuApp {
     this.updateBoardDisplay();
 
     if (this.overlayPossibilities) {
-      this.setStatus('Superposición de posibles activada en la pantalla de solución. Puedes resolver viendo los candidatos en cada casilla.', 'info');
+      this.setStatus(this.t('msg_overlay_enabled'), 'info');
     } else {
-      this.setStatus('Superposición de posibles desactivada.', 'info');
+      this.setStatus(this.t('msg_overlay_disabled'), 'info');
     }
   }
 
@@ -1184,12 +1184,12 @@ class SudokuApp {
     if (this.showPossibilities) {
       const singles = this.engine.findNakedSingles(this.playGrid);
       if (singles.length > 0) {
-        this.setStatus(`Calculadas posibilidades: ¡Hay ${singles.length} casilla(s) con candidato único (resaltadas en amarillo)!`, 'info');
+        this.setStatus(this.t('msg_calculated_singles', { count: singles.length }), 'info');
       } else {
-        this.setStatus('Calculadas posibilidades por cuadro en tiempo real en la pantalla espejo.', 'info');
+        this.setStatus(this.t('msg_calculated_mirror'), 'info');
       }
     } else {
-      this.setStatus('Pantalla espejo en modo estándar.', 'info');
+      this.setStatus(this.t('msg_mirror_standard'), 'info');
     }
   }
 
@@ -1197,22 +1197,22 @@ class SudokuApp {
    * 9.- Botón Resolver / Ver solución: Pide confirmación antes de resolver
    */
   handleResolver() {
-    this.openConfirmModal('¿Verdaderamente deseas resolver el Sudoku y ver la solución completa?', () => {
+    this.openConfirmModal(this.t('confirm_solve_puzzle'), () => {
       this.stopTimer();
       this.mode = 'resuelto';
 
       if (this.solutionGrid) {
         this.playGrid = this.engine.cloneGrid(this.solutionGrid);
         this.updateBoardDisplay();
-        this.setStatus('Sudoku resuelto con la solución matemática exacta de la semilla.', 'success');
+        this.setStatus(this.t('msg_solved_seed_exact'), 'success');
       } else {
         const result = this.engine.solve(this.initialGrid);
         if (result.solved) {
           this.playGrid = this.engine.cloneGrid(result.solution);
           this.updateBoardDisplay();
-          this.setStatus('Sudoku resuelto con el motor matemático MRV.', 'success');
+          this.setStatus(this.t('msg_solved_engine_mrv'), 'success');
         } else {
-          alert('No se ha encontrado una solución matemáticamente válida para esta distribución.');
+          alert(this.t('alert_no_solution_found'));
         }
       }
     });
@@ -1222,7 +1222,7 @@ class SudokuApp {
    * 10.- Botón Reiniciar: Vuelve al estado inicial del planteamiento
    */
   handleReiniciar() {
-    this.openConfirmModal('¿Deseas reiniciar la partida y volver a empezar desde los números iniciales?', () => {
+    this.openConfirmModal(this.t('confirm_restart_puzzle'), () => {
       this.playGrid = this.engine.cloneGrid(this.initialGrid);
       this.elapsedSeconds = 0;
       this.dom.elapsedTimeInput.value = '00:00';
@@ -1230,14 +1230,14 @@ class SudokuApp {
       this.mode = 'jugando';
       this.startTimer();
       this.updateBoardDisplay();
-      this.setStatus('Partida reiniciada.', 'info');
+      this.setStatus(this.t('msg_game_restarted'), 'info');
     });
   }
 
   handleCancelar() {
     this.playGrid = this.engine.cloneGrid(this.initialGrid);
     this.updateBoardDisplay();
-    this.setStatus('Cambios cancelados.', 'info');
+    this.setStatus(this.t('msg_changes_cancelled'), 'info');
   }
 
   hasUserMadeMoves() {
@@ -1254,7 +1254,7 @@ class SudokuApp {
 
   handleCerrar() {
     if (this.hasUserMadeMoves()) {
-      this.openConfirmModal('Tienes una partida en curso con números colocados. ¿Deseas abandonar la partida y salir de Top-Sudoku? Se perderá el avance actual.', () => {
+      this.openConfirmModal(this.t('confirm_exit_game'), () => {
         this.executeExit();
       });
       return;
@@ -1265,7 +1265,7 @@ class SudokuApp {
   executeExit() {
     this.stopTimer();
     this.mode = 'idle';
-    this.setStatus('Sesión cerrada.', 'info');
+    this.setStatus(this.t('msg_session_closed'), 'info');
 
     // 1. Si se ejecuta dentro de wrapper nativo (Capacitor / Cordova / Electron)
     try {
@@ -1310,7 +1310,7 @@ class SudokuApp {
     if (this.dom.exitScreen) {
       this.dom.exitScreen.classList.add('hidden');
     }
-    this.setStatus('¡Bienvenido de nuevo a Top-Sudoku!', 'info');
+    this.setStatus(this.t('msg_welcome_back'), 'info');
   }
 
   handleGameWon() {
@@ -1327,7 +1327,7 @@ class SudokuApp {
       return;
     }
 
-    alert(`¡Felicidades! 🎉\nHas resuelto el Sudoku con éxito en un tiempo de ${formattedTime}.`);
+    alert(this.t('alert_game_won', { time: formattedTime }));
   }
 
   // --- MODAL DE CONFIRMACIÓN ---
@@ -1467,7 +1467,7 @@ class SudokuApp {
       this.dom.elapsedTimeInput.value = '00:00';
       if (this.dom.seedInput) this.dom.seedInput.value = raw.substring(0, 12) + '...';
 
-      this.setStatus(`Cadena de 81 caracteres cargada (${difficulty.toUpperCase()}). Asignado nº ${nextNum} en colección. Pulsa "Iniciar" para jugar o "Grabar" para guardarlo.`, 'success');
+      this.setStatus(this.t('msg_string81_loaded', { level: difficulty.toUpperCase(), num: nextNum }), 'success');
       this.updateBoardDisplay();
       return;
     }
@@ -1556,7 +1556,7 @@ class SudokuApp {
       } catch (e) {}
     }
 
-    this.setStatus(`🌱 Semilla "${seed}" cargada (${difficulty.toUpperCase()} — ${game.initialClues} pistas iniciales). Pulsa "Iniciar" para comenzar.`, 'success');
+    this.setStatus(this.t('msg_seed_loaded', { seed, level: difficulty.toUpperCase(), clues: game.initialClues }), 'success');
     this.updateBoardDisplay();
   }
 
@@ -1597,7 +1597,7 @@ class SudokuApp {
     if (!files || files.length === 0) return;
     const file = files[0];
     if (!file.type || !file.type.startsWith('image/')) {
-      alert('Por favor selecciona un archivo de imagen válido (PNG, JPG, WebP).');
+      alert(this.t('alert_invalid_image'));
       return;
     }
     await this.processOcrImage(file);
@@ -1631,7 +1631,7 @@ class SudokuApp {
       this.showOcrReviewStep();
     } catch (e) {
       console.error('Error durante el escaneo OCR:', e);
-      alert('Ocurrió un error al procesar la imagen: ' + (e.message || e));
+      alert(this.t('alert_error_processing_image', { error: e.message || e }));
       this.resetOcrModal();
     }
   }
@@ -1764,7 +1764,7 @@ class SudokuApp {
 
     const res = this.engine.solve(this.ocrGrid);
     if (!res.solved) {
-      if (!confirm('Este planteamiento parece no tener solución matemática única. ¿Deseas cargarlo de todos modos?')) {
+      if (!confirm(this.t('confirm_not_unique_solution'))) {
         return;
       }
     }
@@ -1800,9 +1800,9 @@ class SudokuApp {
       this.storage.savePuzzle(this.currentLevel, nextNum, this.initialGrid, name, 'Foto-OCR');
       this.currentPuzzleId = `${this.currentLevel}_${nextNum}`;
       this.dom.puzzleNumberInput.value = this.storage.getNextNumberForLevel(this.currentLevel);
-      this.setStatus(`📷 Sudoku escaneado y grabado en colección como "${name}" (${clues} pistas). Pulsa "Iniciar" para resolver.`, 'success');
+      this.setStatus(this.t('msg_ocr_saved_loaded', { name, clues }), 'success');
     } else {
-      this.setStatus(`📷 Sudoku importado desde imagen con éxito (${clues} pistas). Pulsa "Iniciar" para jugar o "Posibles" para ver candidatos.`, 'success');
+      this.setStatus(this.t('msg_ocr_imported', { clues }), 'success');
     }
 
     this.closeOcrModal();
