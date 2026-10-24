@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -19,7 +19,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css?v=1.3">
+  <link rel="stylesheet" href="css/styles.css?v=1.4">
   <script>
     window.forceAppReload = function() {
       if ('caches' in window) {
@@ -116,11 +116,22 @@
       
       <!-- LADO IZQUIERDO: Planteamiento y Juego -->
       <div id="left-panel" class="flex flex-col space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Planteamiento y Juego
-          </h2>
-          <span class="text-xs text-slate-400">Clic en casilla + Teclado 1-9</span>
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center space-x-2">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Planteamiento y Solución
+            </h2>
+            <span id="badge-overlay-active" class="hidden text-[10px] bg-amber-200 text-amber-900 border border-amber-400 font-bold px-1.5 py-0.5 rounded shadow-2xs">
+              ⚡ Posibles activos
+            </span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button id="btn-toggle-overlay-fast" type="button" class="text-xs px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-300 rounded font-semibold transition cursor-pointer flex items-center gap-1 shadow-2xs" title="Activar o desactivar la visualización de posibles directamente en las casillas vacías de este tablero mientras juegas">
+              <span>🔍</span>
+              <span id="text-toggle-overlay-fast">Superponer posibles</span>
+            </button>
+            <span class="text-xs text-slate-400 hidden sm:inline">Clic en casilla + Teclado 1-9</span>
+          </div>
         </div>
 
         <!-- Tablero 9x9 Izquierdo -->
@@ -130,8 +141,8 @@
           </div>
         </div>
 
-        <!-- Teclado Numérico Táctil para Móvil / Tablet (Ubicado directamente bajo la cuadrícula para máxima ergonomía) -->
-        <div id="touch-keypad" class="flex lg:hidden bg-slate-100 border border-slate-200 rounded-lg p-2 sm:p-2.5 flex-col items-center gap-2 shadow-xs my-1">
+        <!-- Teclado Numérico Táctil / Clic (Ubicado directamente bajo la cuadrícula para máxima ergonomía táctil y ratón) -->
+        <div id="touch-keypad" class="flex bg-slate-100 border border-slate-200 rounded-lg p-2 sm:p-2.5 flex-col items-center gap-2 shadow-xs my-1 max-w-[460px] mx-auto w-full">
           <!-- Fila 1: Números del 1 al 9 -->
           <div class="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 w-full">
             <button data-val="1" class="keypad-btn flex-1 min-w-[32px] max-w-[42px] h-9 sm:h-10 bg-white hover:bg-blue-50 border border-slate-300 rounded font-bold text-base text-slate-800 shadow-xs active:bg-blue-100 transition cursor-pointer">1</button>
@@ -232,6 +243,23 @@
             <label class="inline-flex items-center space-x-1.5 cursor-pointer select-none" title="Comprobación contra el tablero actual: rechaza el número únicamente si colisiona con fila, columna o caja 3x3 en la situación actual (Reglas clásicas: permite deducción libre y ensayo sin desvelar la solución).">
               <input type="radio" name="criterio_rechazo" value="situacion_actual" class="text-blue-600 focus:ring-0">
               <span class="font-semibold text-slate-800">Situación actual <span class="text-slate-500 font-normal">(Reglas clásicas)</span></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Opciones de Visualización en Pantalla de Solución: Superponer Posibles -->
+        <div class="bg-indigo-50/70 border border-indigo-200/90 rounded px-3 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-2xs">
+          <div class="flex items-center space-x-1.5 font-bold text-slate-700">
+            <span class="text-indigo-600">🔍</span>
+            <span>Visualización en pantalla de solución:</span>
+          </div>
+          <div class="flex items-center space-x-3 flex-wrap">
+            <label class="inline-flex items-center space-x-2 cursor-pointer select-none bg-white px-2.5 py-1 rounded border border-indigo-300 hover:bg-indigo-100/60 transition shadow-2xs" title="Superpone los candidatos posibles en tiempo real directamente dentro de las casillas vacías mientras resuelves el Sudoku">
+              <input type="checkbox" id="toggle-overlay-possibilities" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+              <span class="font-bold text-indigo-950 flex items-center gap-1.5">
+                <span>Superponer posibles</span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 border border-amber-300 font-semibold px-1.5 py-0.2 rounded">Resolver y ver candidatos</span>
+              </span>
             </label>
           </div>
         </div>
@@ -536,7 +564,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=1.6"></script>
+  <script type="module" src="js/app.js?v=1.7"></script>
   <!-- Modal Presentación Logotipo Top Sudoku -->
   <div id="modal-top-logo" onclick="if(event.target === this) window.closeTopLogoModal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">

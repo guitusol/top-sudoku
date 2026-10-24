@@ -29,8 +29,11 @@ class SudokuApp {
     this.selectedRow = 0;
     this.selectedCol = 0;
 
-    // Posibilidades activas
+    // Posibilidades activas en pantalla espejo
     this.showPossibilities = false;
+
+    // NUEVA OPCIÓN: Superponer posibles en el tablero de solución (pantalla izquierda)
+    this.overlayPossibilities = localStorage.getItem('top_sudoku_overlay_possibilities') === 'true';
 
     // Criterio de rechazo de casilla ('solucion' vs 'situacion_actual')
     this.rejectionCriterion = localStorage.getItem('top_sudoku_rejection_criterion') || 'solucion';
@@ -82,6 +85,11 @@ class SudokuApp {
       tabPossibilities: document.getElementById('tab-possibilities'),
       leftPanel: document.getElementById('left-panel'),
       rightPanel: document.getElementById('right-panel'),
+
+      // Superponer posibles en pantalla de solución (Nueva opción)
+      toggleOverlayPossibilities: document.getElementById('toggle-overlay-possibilities'),
+      btnToggleOverlayFast: document.getElementById('btn-toggle-overlay-fast'),
+      badgeOverlayActive: document.getElementById('badge-overlay-active'),
 
       // Botones de control
       btnPlantear: document.getElementById('btn-plantear'),
@@ -154,6 +162,9 @@ class SudokuApp {
     const activeRejection = document.querySelector(`input[name="criterio_rechazo"][value="${this.rejectionCriterion}"]`);
     if (activeRejection) activeRejection.checked = true;
 
+    // Sincronizar opción de superponer posibles
+    this.updateOverlayUI();
+
     this.renderLeftBoard();
     this.renderRightBoard();
   }
@@ -174,6 +185,14 @@ class SudokuApp {
     this.dom.btnPosiblesMirror?.addEventListener('click', () => this.togglePosibles());
     this.dom.btnReiniciar.addEventListener('click', () => this.handleReiniciar());
     this.dom.btnCerrar.addEventListener('click', () => this.handleCerrar());
+
+    // Superponer posibles en pantalla de solución
+    this.dom.toggleOverlayPossibilities?.addEventListener('change', (e) => {
+      this.toggleOverlayPossibilities(e.target.checked);
+    });
+    this.dom.btnToggleOverlayFast?.addEventListener('click', () => {
+      this.toggleOverlayPossibilities();
+    });
 
     // Módulo OCR desde Imagen o Cámara
     this.dom.btnScanPhoto?.addEventListener('click', () => this.openOcrModal());
@@ -436,24 +455,65 @@ class SudokuApp {
   }
 
   /**
-   * Actualiza el contenido visual del tablero izquierdo
+   * Actualiza el contenido visual del tablero izquierdo (Planteamiento y Solución)
    */
   updateBoardDisplay() {
     const cells = this.dom.leftBoard.querySelectorAll('.sudoku-cell');
+    const possibilities = (this.overlayPossibilities || this.showPossibilities) 
+      ? this.engine.getAllPossibilities(this.playGrid) 
+      : null;
+
     cells.forEach(cell => {
       const r = parseInt(cell.dataset.row, 10);
       const c = parseInt(cell.dataset.col, 10);
       const val = this.playGrid[r][c];
       const isInitial = this.initialGrid[r][c] !== 0;
 
-      cell.textContent = val !== 0 ? val : '';
-      cell.classList.remove('initial', 'user-placed');
+      cell.innerHTML = '';
+      cell.classList.remove('initial', 'user-placed', 'single-candidate');
 
       if (val !== 0) {
+        cell.textContent = val;
         if (isInitial && this.mode !== 'plantear') {
           cell.classList.add('initial');
         } else {
           cell.classList.add('user-placed');
+        }
+      } else {
+        // Casilla vacía en tablero de solución
+        if (this.overlayPossibilities && this.mode !== 'plantear' && possibilities) {
+          const info = possibilities[r][c];
+          const candidates = info.candidates;
+          if (candidates.length === 1) {
+            // Candidato único: fondo especial y número directo destacado
+            cell.classList.add('single-candidate');
+            const singleSpan = document.createElement('span');
+            singleSpan.className = 'single-candidate-num';
+            singleSpan.textContent = candidates[0];
+            singleSpan.title = `Candidato único: ${candidates[0]} (Clic para colocar)`;
+            singleSpan.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.selectCell(r, c);
+              this.setCellValue(r, c, candidates[0]);
+            });
+            cell.appendChild(singleSpan);
+          } else if (candidates.length > 0) {
+            const box = document.createElement('div');
+            box.className = 'candidate-box overlay-candidate-box';
+            candidates.forEach(cand => {
+              const candSpan = document.createElement('span');
+              candSpan.className = 'candidate-num';
+              candSpan.textContent = cand;
+              candSpan.title = `Poner ${cand} en la casilla (${r + 1}, ${c + 1})`;
+              candSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectCell(r, c);
+                this.setCellValue(r, c, cand);
+              });
+              box.appendChild(candSpan);
+            });
+            cell.appendChild(box);
+          }
         }
       }
     });
@@ -487,11 +547,31 @@ class SudokuApp {
           if (candidates.length === 1) {
             // ¡Candidato único! Resaltado pedagógico especial
             cell.classList.add('single-candidate');
-            cell.textContent = candidates[0];
+            const singleSpan = document.createElement('span');
+            singleSpan.className = 'single-candidate-num';
+            singleSpan.textContent = candidates[0];
+            singleSpan.title = `Candidato único: ${candidates[0]} (Clic para colocar en tablero)`;
+            singleSpan.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.selectCell(r, c);
+              this.setCellValue(r, c, candidates[0]);
+            });
+            cell.appendChild(singleSpan);
           } else if (candidates.length > 0) {
             const box = document.createElement('div');
             box.className = 'candidate-box';
-            box.textContent = candidates.join(' ');
+            candidates.forEach(cand => {
+              const candSpan = document.createElement('span');
+              candSpan.className = 'candidate-num';
+              candSpan.textContent = cand;
+              candSpan.title = `Poner ${cand} en la casilla (${r + 1}, ${c + 1})`;
+              candSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectCell(r, c);
+                this.setCellValue(r, c, cand);
+              });
+              box.appendChild(candSpan);
+            });
             cell.appendChild(box);
           }
         }
@@ -503,13 +583,19 @@ class SudokuApp {
    * Manejo de entrada de números (desde teclado físico o táctil)
    */
   setCellValue(row, col, num) {
+    // Si la partida no ha comenzado (modo 'idle'), iniciar automáticamente
     if (this.mode === 'idle') {
-      this.setStatus('Pulsa "Iniciar" para jugar o "Plantear" para crear uno nuevo.', 'warn');
+      this.handleIniciar();
+    }
+
+    if (this.mode === 'resuelto') {
+      this.setStatus('Sudoku resuelto. Pulsa "Reiniciar" o "Iniciar" para comenzar una nueva partida.', 'info');
       return;
     }
 
     // Si estamos jugando y es una casilla inicial fijada, no permitir sobreescribir
     if (this.mode === 'jugando' && this.initialGrid[row][col] !== 0) {
+      this.setStatus(`La casilla (${row + 1}, ${col + 1}) es una pista inicial fija del Sudoku.`, 'warn');
       return;
     }
 
@@ -695,6 +781,12 @@ class SudokuApp {
       return;
     }
 
+    // Si el usuario está escribiendo en un input, textarea o select, no interceptar
+    const activeEl = document.activeElement;
+    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA')) {
+      return;
+    }
+
     // Si hay un modal abierto, no interceptar
     if (!this.dom.searchModal.classList.contains('hidden') || !this.dom.confirmModal.classList.contains('hidden')) {
       return;
@@ -704,19 +796,41 @@ class SudokuApp {
     if (e.key === 'ArrowUp') {
       this.selectCell(Math.max(0, this.selectedRow - 1), this.selectedCol);
       e.preventDefault();
+      return;
     } else if (e.key === 'ArrowDown') {
       this.selectCell(Math.min(8, this.selectedRow + 1), this.selectedCol);
       e.preventDefault();
+      return;
     } else if (e.key === 'ArrowLeft') {
       this.selectCell(this.selectedRow, Math.max(0, this.selectedCol - 1));
       e.preventDefault();
+      return;
     } else if (e.key === 'ArrowRight') {
       this.selectCell(this.selectedRow, Math.min(8, this.selectedCol + 1));
       e.preventDefault();
-    } else if (e.key >= '1' && e.key <= '9') {
-      this.setCellValue(this.selectedRow, this.selectedCol, parseInt(e.key, 10));
-    } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+      return;
+    }
+
+    // Detección robusta de números (teclado alfanumérico estándar y teclado numérico NumPad)
+    let num = null;
+    if (e.key >= '1' && e.key <= '9') {
+      num = parseInt(e.key, 10);
+    } else if (e.code && e.code.startsWith('Numpad') && e.code.length === 7) {
+      const d = parseInt(e.code.replace('Numpad', ''), 10);
+      if (d >= 1 && d <= 9) num = d;
+    } else if (e.code && e.code.startsWith('Digit') && e.code.length === 6) {
+      const d = parseInt(e.code.replace('Digit', ''), 10);
+      if (d >= 1 && d <= 9) num = d;
+    }
+
+    if (num !== null) {
+      this.setCellValue(this.selectedRow, this.selectedCol, num);
+    } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0' || e.code === 'Numpad0' || e.code === 'Digit0') {
       this.setCellValue(this.selectedRow, this.selectedCol, 0);
+    } else if (e.key === 'p' || e.key === 'P') {
+      this.togglePosibles();
+    } else if (e.key === 'o' || e.key === 'O') {
+      this.toggleOverlayPossibilities();
     }
   }
 
@@ -964,6 +1078,48 @@ class SudokuApp {
     const mins = Math.floor(totalSecs / 60);
     const secs = totalSecs % 60;
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  /**
+   * Actualiza el estado visual de los controles de la opción Superponer Posibles
+   */
+  updateOverlayUI() {
+    if (this.dom.toggleOverlayPossibilities) {
+      this.dom.toggleOverlayPossibilities.checked = this.overlayPossibilities;
+    }
+    if (this.dom.badgeOverlayActive) {
+      this.dom.badgeOverlayActive.classList.toggle('hidden', !this.overlayPossibilities);
+    }
+    if (this.dom.btnToggleOverlayFast) {
+      this.dom.btnToggleOverlayFast.classList.toggle('bg-amber-200', this.overlayPossibilities);
+      this.dom.btnToggleOverlayFast.classList.toggle('border-amber-400', this.overlayPossibilities);
+      this.dom.btnToggleOverlayFast.classList.toggle('text-amber-950', this.overlayPossibilities);
+      this.dom.btnToggleOverlayFast.classList.toggle('font-bold', this.overlayPossibilities);
+      const textEl = document.getElementById('text-toggle-overlay-fast');
+      if (textEl) {
+        textEl.textContent = this.overlayPossibilities ? 'Ocultar posibles' : 'Superponer posibles';
+      }
+    }
+  }
+
+  /**
+   * Alterna la opción de superponer posibles directamente en el tablero de solución
+   */
+  toggleOverlayPossibilities(forceState = null) {
+    if (forceState !== null) {
+      this.overlayPossibilities = forceState;
+    } else {
+      this.overlayPossibilities = !this.overlayPossibilities;
+    }
+    localStorage.setItem('top_sudoku_overlay_possibilities', this.overlayPossibilities);
+    this.updateOverlayUI();
+    this.updateBoardDisplay();
+
+    if (this.overlayPossibilities) {
+      this.setStatus('Superposición de posibles activada en la pantalla de solución. Puedes resolver viendo los candidatos en cada casilla.', 'info');
+    } else {
+      this.setStatus('Superposición de posibles desactivada.', 'info');
+    }
   }
 
   /**
