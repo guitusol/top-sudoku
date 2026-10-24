@@ -1295,7 +1295,7 @@ class SudokuApp {
       this.storage.markAsSolved(this.currentPuzzleId, this.elapsedSeconds);
     }
     this.setStatus(`¡ENHORABUENA! 🎉 Has completado el Sudoku en ${this.formatTime(this.elapsedSeconds)}.`, 'success');
-    alert(`¡Felicidades, Guillermo! 🎉\nHas resuelto el Sudoku con éxito en un tiempo de ${this.formatTime(this.elapsedSeconds)}.`);
+    alert(`¡Felicidades! 🎉\nHas resuelto el Sudoku con éxito en un tiempo de ${this.formatTime(this.elapsedSeconds)}.`);
   }
 
   // --- MODAL DE CONFIRMACIÓN ---
