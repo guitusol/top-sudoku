@@ -562,6 +562,10 @@
     <a href="privacidad.html" class="hover:text-blue-600 underline">Política de Privacidad</a>
     <span class="mx-2">•</span>
     <a href="https://github.com/guitusol/top-sudoku" target="_blank" class="hover:text-blue-600 underline">Código en GitHub</a>
+    <span class="mx-2">•</span>
+    <a id="footer-link-arena" href="https://guitusol.github.io/sudoku-arena/" target="_blank" class="text-cyan-700 hover:text-cyan-900 font-bold hover:underline inline-flex items-center gap-1 transition">
+      <span>⚔️</span> <span id="footer-text-arena">Sudoku Arena: Duelos & Competición</span>
+    </a>
   </footer>
 
   <!-- PANTALLA COMPLETA DE SALIDA (Top-Sudoku Cerrado) -->
@@ -597,8 +601,51 @@
     </div>
   </div>
 
+
+  <!-- MODAL: Sugerencia de Graduación hacia Sudoku Arena (Jugadores con Nivel) -->
+  <div id="modal-arena-promo" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-2 border-cyan-500/50 rounded-2xl max-w-lg w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">
+      <button id="btn-close-arena-promo" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-800 transition cursor-pointer">✕</button>
+      
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-400/40 text-3xl shadow-lg mb-3">
+        🏆
+      </div>
+      
+      <div class="mb-2">
+        <span id="arena-promo-badge" class="inline-block px-3 py-1 bg-cyan-950/80 border border-cyan-400/60 rounded-full text-cyan-300 text-[11px] font-bold uppercase tracking-wider">
+          🏆 Nivel Avanzado Detectado
+        </span>
+      </div>
+
+      <h2 id="arena-promo-title" class="text-xl font-black text-white mb-3">
+        ¿Listo para el siguiente reto?
+      </h2>
+
+      <div id="arena-promo-message" class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-5 text-left bg-slate-800/70 border border-slate-700/70 p-4 rounded-xl">
+        Has completado este Sudoku con soltura. ¡Tu capacidad deductiva está lista para el siguiente nivel!
+      </div>
+
+      <div class="space-y-3">
+        <a id="btn-arena-promo-go" href="https://guitusol.github.io/sudoku-arena/" target="_blank" class="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 px-5 rounded-xl shadow-lg shadow-cyan-500/20 transition cursor-pointer flex items-center justify-center gap-2 text-sm active:scale-98">
+          <span id="arena-promo-btn-text">⚔️ Probar Sudoku Arena Gratis</span>
+          <span>→</span>
+        </a>
+
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-1 flex-wrap gap-2">
+          <label class="flex items-center gap-2 cursor-pointer select-none hover:text-slate-200">
+            <input type="checkbox" id="chk-arena-promo-mute" class="rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-0">
+            <span id="arena-promo-mute-text">Recordármelo más adelante</span>
+          </label>
+          <button id="btn-arena-promo-stay" class="text-slate-400 hover:text-white underline transition cursor-pointer py-1">
+            <span id="arena-promo-stay-text">Seguir en Top Sudoku</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=1.8"></script>
+  <script type="module" src="js/app.js?v=2.0"></script>
   <!-- Modal Presentación Logotipo Top Sudoku -->
   <div id="modal-top-logo" onclick="if(event.target === this) window.closeTopLogoModal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">

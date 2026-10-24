@@ -1,11 +1,13 @@
 import { SudokuEngine } from './sudoku-engine.js';
 import { SudokuStorage } from './sudoku-storage.js';
 import { SudokuOCR } from './sudoku-ocr.js';
+import { ArenaPromoManager } from './arena-promo.js';
 
 class SudokuApp {
   constructor() {
     this.engine = new SudokuEngine();
     this.storage = new SudokuStorage();
+    this.arenaPromo = new ArenaPromoManager();
 
     // Estado del juego
     this.mode = 'idle'; // 'idle', 'plantear', 'jugando', 'resuelto'
@@ -48,6 +50,7 @@ class SudokuApp {
     this.bindEvents();
     this.currentSeed = null;
     this.startAnalogClock();
+    this.arenaPromo.init();
 
     // Comprobar si la URL trae semilla o nivel especificado (?semilla=... o ?seed=...)
     const urlParams = new URLSearchParams(window.location.search);
@@ -1294,8 +1297,15 @@ class SudokuApp {
     if (this.currentPuzzleId) {
       this.storage.markAsSolved(this.currentPuzzleId, this.elapsedSeconds);
     }
-    this.setStatus(`¡ENHORABUENA! 🎉 Has completado el Sudoku en ${this.formatTime(this.elapsedSeconds)}.`, 'success');
-    alert(`¡Felicidades! 🎉\nHas resuelto el Sudoku con éxito en un tiempo de ${this.formatTime(this.elapsedSeconds)}.`);
+    const formattedTime = this.formatTime(this.elapsedSeconds);
+    this.setStatus(`¡ENHORABUENA! 🎉 Has completado el Sudoku en ${formattedTime}.`, 'success');
+
+    // Sugerencia pedagógica hacia Sudoku Arena con control de nivel, frecuencia e idioma
+    if (this.arenaPromo && this.arenaPromo.checkAndSuggest(formattedTime, this.currentLevel, this.storage)) {
+      return;
+    }
+
+    alert(`¡Felicidades! 🎉\nHas resuelto el Sudoku con éxito en un tiempo de ${formattedTime}.`);
   }
 
   // --- MODAL DE CONFIRMACIÓN ---
