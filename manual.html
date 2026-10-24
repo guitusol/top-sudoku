@@ -71,24 +71,37 @@
       <div onclick="window.openTopLogoModal()" class="flex items-center space-x-3 cursor-pointer hover:opacity-90 transition group select-none p-1 rounded-lg hover:bg-slate-100" title="Haz clic para ver nuestro logotipo oficial">
         <img src="icons/icon-192.png" alt="Top Sudoku" class="w-9 h-9 rounded-lg shadow-sm object-contain border border-amber-400/40 group-hover:scale-105 transition pointer-events-none">
         <div>
-          <h1 class="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-blue-800 transition">Manual Oficial del Usuario</h1>
-          <p class="text-xs text-slate-500 font-medium">Top-Sudoku — Escuela y Solucionador Lógico de Sudoku</p>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-blue-800 transition" data-m-i18n="doc_title">Manual Oficial del Usuario</h1>
+          <p class="text-xs text-slate-500 font-medium" data-m-i18n="doc_subtitle">Top-Sudoku — Escuela y Solucionador Lógico de Sudoku</p>
         </div>
       </div>
       <div class="header-nav-actions flex items-center gap-2.5">
         <button id="btn-print-pdf" onclick="window.print()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold rounded-lg shadow transition cursor-pointer">
-          <span>📄</span> <span>Descargar en PDF</span>
+          <span>📄</span> <span data-m-i18n="btn_pdf">Descargar en PDF</span>
         </button>
         <a href="index.html" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow transition">
-          <span>🎮 Volver al Tablero</span>
+          <span data-m-i18n="btn_back">🎮 Volver al Tablero</span>
         </a>
       </div>
     </div>
 
+    <!-- Barra de Selección de Idioma del Manual (9 Idiomas Oficiales) -->
+    <div class="lang-bar flex items-center gap-1.5 flex-wrap my-4 select-none pb-4 border-b border-slate-200">
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-amber-100 text-amber-900 active cursor-pointer shadow-2xs" data-lang="es">🇪🇸 ES</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="en">🇬🇧 EN</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="ja">🇯🇵 JA</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="fr">🇫🇷 FR</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="de">🇩🇪 DE</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="ca">🟡 CA</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="va">🦇 VA</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="eu">🟢 EU</button>
+      <button class="manual-lang-btn px-2.5 py-1 text-xs rounded border border-slate-300 font-bold bg-white hover:bg-slate-100 text-slate-700 cursor-pointer shadow-2xs" data-lang="gl">🔵 GL</button>
+    </div>
+
     <!-- Introducción Destacada -->
     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 p-4 sm:p-5 rounded-r-lg mb-8 text-sm text-slate-700 leading-relaxed shadow-xs">
-      <strong class="font-bold text-blue-900">Filosofía de la Escuela Top-Sudoku:</strong> 
-      Aprender a resolver sudokus con rigor lógico y sin frustración. Aquí no se adivina jamás; cada número se deduce comprendiendo las posibilidades matemáticas de cada casilla y aplicando el descarte sistemático.
+      <strong class="font-bold text-blue-900" data-m-i18n="phil_title">Filosofía de la Escuela Top-Sudoku:</strong> 
+      <span data-m-i18n="phil_text">Aprender a resolver sudokus con rigor lógico y sin frustración. Aquí no se adivina jamás; cada número se deduce comprendiendo las posibilidades matemáticas de cada casilla y aplicando el descarte sistemático.</span>
     </div>
 
     <div class="space-y-8 text-sm leading-relaxed text-slate-700">
@@ -461,5 +474,6 @@
       if (modal) modal.classList.add('hidden');
     };
   </script>
+  <script src="js/manual_i18n.js?v=2.0"></script>
 </body>
 </html>

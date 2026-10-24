@@ -58,17 +58,20 @@
         <div class="cursor-pointer" onclick="window.openTopLogoModal()">
           <h1 class="font-bold text-sm tracking-wide group-hover:text-amber-300 transition flex items-center gap-1.5">
             <span>TOP SUDOKU</span>
-            <span class="text-xs text-amber-400/80 font-normal hidden sm:inline">— Escuela y Solucionador Lógico</span>
+            <span class="text-xs text-amber-400/80 font-normal hidden sm:inline" data-i18n="app_subtitle">— Escuela y Solucionador Lógico</span>
           </h1>
         </div>
       </div>
       <div class="flex items-center space-x-2 text-xs">
-        <button type="button" onclick="window.forceAppReload()" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-200 px-2 py-1 rounded shadow-xs transition flex items-center gap-1 cursor-pointer font-bold" title="Recargar aplicación y limpiar caché (🔄)">
+        <button type="button" onclick="window.forceAppReload()" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-200 px-2 py-1 rounded shadow-xs transition flex items-center gap-1 cursor-pointer font-bold" title="Recargar aplicación y limpiar caché (🔄)" data-i18n-title="btn_reload_title">
           <span>🔄</span>
         </button>
-        <a href="manual.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition" title="Manual del Usuario y Escuela Lógica"><span>📖</span><span>Manual</span></a>
-        <button type="button" id="btn-header-cerrar" class="bg-rose-700 hover:bg-rose-600 active:bg-rose-800 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition cursor-pointer" title="Cerrar y salir de Top-Sudoku"><span>🚪</span><span>Salir</span></button>
-        <span id="status-badge" class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded">Listo</span>
+        <button type="button" id="btn-open-lang-modal" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-amber-300 font-bold px-2 py-1 rounded flex items-center gap-1.5 shadow-sm transition cursor-pointer border border-slate-600" title="Seleccionar idioma / Select language" data-i18n-title="btn_lang_title">
+          <span>🌐</span><span id="current-lang-code" class="font-mono text-white text-xs">🇪🇸 ES</span>
+        </button>
+        <a href="manual.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition" title="Manual del Usuario y Escuela Lógica" data-i18n-title="btn_manual_title"><span>📖</span><span data-i18n="btn_manual">Manual</span></a>
+        <button type="button" id="btn-header-cerrar" class="bg-rose-700 hover:bg-rose-600 active:bg-rose-800 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition cursor-pointer" title="Cerrar y salir de Top-Sudoku" data-i18n-title="btn_exit_title"><span>🚪</span><span data-i18n="btn_exit">Salir</span></button>
+        <span id="status-badge" class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded" data-i18n="status_ready">Listo</span>
       </div>
     </div>
 
@@ -76,13 +79,13 @@
     <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-700">
         <div class="flex items-center space-x-2">
-          <span>Inicio partida:</span>
+          <span data-i18n="label_start_time">Inicio partida:</span>
           <input type="text" id="start-date-input" readonly 
-            class="bg-white border border-slate-300 rounded px-2.5 py-1 text-slate-800 font-mono text-xs w-44 shadow-inner" placeholder="Sin iniciar">
+            class="bg-white border border-slate-300 rounded px-2.5 py-1 text-slate-800 font-mono text-xs w-44 shadow-inner" placeholder="Sin iniciar" data-i18n-placeholder="placeholder_not_started">
         </div>
 
         <div class="flex items-center space-x-2">
-          <span>Tiempo transcurrido:</span>
+          <span data-i18n="label_elapsed_time">Tiempo transcurrido:</span>
           <input type="text" id="elapsed-time-input" readonly 
             class="bg-white border border-slate-300 rounded px-2.5 py-1 text-emerald-700 font-mono font-bold text-sm w-20 text-center shadow-inner" value="00:00">
         </div>
@@ -119,7 +122,7 @@
       <div id="left-panel" class="flex flex-col space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center space-x-2">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="header_board_left">
               Planteamiento y Solución
             </h2>
             <span id="badge-overlay-active" class="hidden text-[10px] bg-amber-200 text-amber-900 border border-amber-400 font-bold px-1.5 py-0.5 rounded shadow-2xs">
@@ -129,9 +132,9 @@
           <div class="flex items-center space-x-2">
             <button id="btn-toggle-overlay-fast" type="button" class="text-xs px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-300 rounded font-semibold transition cursor-pointer flex items-center gap-1 shadow-2xs" title="Activar o desactivar la visualización de posibles directamente en las casillas vacías de este tablero mientras juegas">
               <span>🔍</span>
-              <span id="text-toggle-overlay-fast">Superponer posibles</span>
+              <span id="text-toggle-overlay-fast" data-i18n="btn_overlay_candidates">Superponer posibles</span>
             </button>
-            <span class="text-xs text-slate-400 hidden sm:inline">Clic en casilla + Teclado 1-9</span>
+            <span class="text-xs text-slate-400 hidden sm:inline" data-i18n="hint_cell_click">Clic en casilla + Teclado 1-9</span>
           </div>
         </div>
 
@@ -164,9 +167,9 @@
             <button data-val="down" title="Mover abajo" class="keypad-btn w-9 sm:w-10 h-8 sm:h-9 bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 rounded font-bold text-sm shadow-xs flex items-center justify-center active:bg-slate-400 transition cursor-pointer">▼</button>
             <button data-val="right" title="Mover derecha" class="keypad-btn w-9 sm:w-10 h-8 sm:h-9 bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 rounded font-bold text-sm shadow-xs flex items-center justify-center active:bg-slate-400 transition cursor-pointer">▶</button>
 
-            <button data-val="clear" class="keypad-btn px-3 h-8 sm:h-9 bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-700 rounded font-bold text-xs shadow-xs active:bg-rose-200 transition cursor-pointer">Borrar</button>
+            <button data-val="clear" class="keypad-btn px-3 h-8 sm:h-9 bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-700 rounded font-bold text-xs shadow-xs active:bg-rose-200 transition cursor-pointer" data-i18n="keypad_clear">Borrar</button>
             <button data-val="posibles" class="keypad-btn px-3.5 h-8 sm:h-9 bg-amber-200 hover:bg-amber-300 border border-amber-400 text-amber-900 rounded font-bold text-xs shadow-xs active:bg-amber-300 transition flex items-center gap-1 cursor-pointer">
-              <span>⚡</span> Posibles
+              <span>⚡</span> <span data-i18n="keypad_posibles">Posibles</span>
             </button>
           </div>
         </div>
@@ -177,31 +180,31 @@
             <span class="font-bold text-slate-700">Nivel:</span>
             <label class="inline-flex items-center space-x-1 cursor-pointer">
               <input type="radio" name="nivel" value="facil" checked class="text-blue-600 focus:ring-0">
-              <span class="text-slate-700">fácil</span>
+              <span class="text-slate-700" data-i18n="diff_facil">fácil</span>
             </label>
             <label class="inline-flex items-center space-x-1 cursor-pointer">
               <input type="radio" name="nivel" value="medio" class="text-blue-600 focus:ring-0">
-              <span class="text-slate-700">medio</span>
+              <span class="text-slate-700" data-i18n="diff_medio">medio</span>
             </label>
             <label class="inline-flex items-center space-x-1 cursor-pointer">
               <input type="radio" name="nivel" value="dificil" class="text-blue-600 focus:ring-0">
-              <span class="text-slate-700">difícil</span>
+              <span class="text-slate-700" data-i18n="diff_dificil">difícil</span>
             </label>
             <label class="inline-flex items-center space-x-1 cursor-pointer">
               <input type="radio" name="nivel" value="endemoniado" class="text-blue-600 focus:ring-0">
-              <span class="text-slate-700">endemoniado</span>
+              <span class="text-slate-700" data-i18n="diff_endemoniado">endemoniado</span>
             </label>
           </div>
 
           <!-- Selector de Semilla Propuesta -->
           <div class="flex items-center space-x-1.5 bg-white border border-slate-300 rounded px-2.5 py-1 shadow-xs">
             <span class="font-bold text-slate-700 flex items-center gap-1" title="Número o palabra de semilla para generar un Sudoku determinista">
-              <span>🌱</span> Semilla:
+              <span>🌱</span> <span data-i18n="label_seed">Semilla:</span>
             </span>
             <input type="text" id="seed-input" placeholder="Ej. 40837" 
               class="w-24 bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-center font-mono font-bold text-blue-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" 
               title="Escribe un número o texto y pulsa Cargar (o pulsa Intro)">
-            <button id="btn-load-seed" title="Cargar Sudoku generado con esta semilla (Intro)" 
+            <button id="btn-load-seed" title="Cargar Sudoku generado con esta semilla (Intro)" data-i18n-title="btn_load_seed_title" data-i18n="btn_load_puzzle"
               class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow-xs active:translate-y-0.5 transition cursor-pointer">
               Cargar
             </button>
@@ -212,12 +215,12 @@
             <button id="btn-scan-photo" title="Escanear Sudoku desde Imagen o Cámara (📷)" 
               class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded shadow-xs active:translate-y-0.5 transition cursor-pointer flex items-center gap-1">
               <span>📷</span>
-              <span>Foto</span>
+              <span data-i18n="btn_photo_ocr">Foto</span>
             </button>
           </div>
 
           <div class="flex items-center space-x-1.5">
-            <span class="font-semibold text-slate-600" title="Número de Sudoku guardado en tu colección local">Colección nº:</span>
+            <span class="font-semibold text-slate-600" title="Número de Sudoku guardado en tu colección local" data-i18n="label_collection_num">Colección nº:</span>
             <div class="inline-flex items-center border border-slate-300 rounded-lg overflow-hidden bg-white shadow-xs">
               <button type="button" id="btn-prev-puzzle" title="Sudoku anterior (◀)" 
                 class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-sm select-none active:bg-slate-300 transition cursor-pointer">◀</button>
@@ -258,8 +261,8 @@
             <label class="inline-flex items-center space-x-2 cursor-pointer select-none bg-white px-2.5 py-1 rounded border border-indigo-300 hover:bg-indigo-100/60 transition shadow-2xs" title="Superpone los candidatos posibles en tiempo real directamente dentro de las casillas vacías mientras resuelves el Sudoku">
               <input type="checkbox" id="toggle-overlay-possibilities" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
               <span class="font-bold text-indigo-950 flex items-center gap-1.5">
-                <span>Superponer posibles</span>
-                <span class="text-[10px] bg-amber-100 text-amber-800 border border-amber-300 font-semibold px-1.5 py-0.2 rounded">Resolver y ver candidatos</span>
+                <span data-i18n="btn_overlay_candidates">Superponer posibles</span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 border border-amber-300 font-semibold px-1.5 py-0.2 rounded" data-i18n="badge_solve_and_candidates">Resolver y ver candidatos</span>
               </span>
             </label>
           </div>
@@ -267,31 +270,31 @@
 
         <!-- Botonera de Acciones (Estilo FoxPro) -->
         <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 text-xs font-semibold">
-          <button id="btn-plantear" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+          <button id="btn-plantear" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition" data-i18n="btn_plantear">
             plantear
           </button>
-          <button id="btn-grabar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+          <button id="btn-grabar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition" data-i18n="btn_grabar">
             grabar
           </button>
-          <button id="btn-buscar" class="px-2 py-2 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded border border-blue-300 shadow-sm active:translate-y-0.5 transition font-bold">
+          <button id="btn-buscar" class="px-2 py-2 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded border border-blue-300 shadow-sm active:translate-y-0.5 transition font-bold" data-i18n="btn_buscar">
             buscar
           </button>
-          <button id="btn-iniciar" class="px-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded border border-emerald-700 shadow-sm active:translate-y-0.5 transition font-bold">
+          <button id="btn-iniciar" class="px-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded border border-emerald-700 shadow-sm active:translate-y-0.5 transition font-bold" data-i18n="btn_iniciar">
             iniciar
           </button>
-          <button id="btn-posibles" class="px-2 py-2 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded border border-amber-400 shadow-sm active:translate-y-0.5 transition font-bold">
+          <button id="btn-posibles" class="px-2 py-2 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded border border-amber-400 shadow-sm active:translate-y-0.5 transition font-bold" data-i18n="btn_posibles">
             posibles
           </button>
-          <button id="btn-resolver" class="px-2 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 rounded border border-indigo-300 shadow-sm active:translate-y-0.5 transition">
+          <button id="btn-resolver" class="px-2 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 rounded border border-indigo-300 shadow-sm active:translate-y-0.5 transition" data-i18n="btn_resolver">
             resolver
           </button>
-          <button id="btn-reiniciar" class="px-2 py-2 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded border border-rose-300 shadow-sm active:translate-y-0.5 transition">
+          <button id="btn-reiniciar" class="px-2 py-2 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded border border-rose-300 shadow-sm active:translate-y-0.5 transition" data-i18n="btn_reiniciar">
             reiniciar
           </button>
-          <button id="btn-cancelar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+          <button id="btn-cancelar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition" data-i18n="btn_cancelar">
             cancelar
           </button>
-          <button id="btn-cerrar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition">
+          <button id="btn-cerrar" class="px-2 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition" data-i18n="btn_cerrar">
             cerrar
           </button>
         </div>
@@ -301,10 +304,10 @@
       <div id="right-panel" class="hidden lg:flex flex-col space-y-4">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center space-x-1.5">
-            <span>POSIBILIDADES POR CUADRO</span>
-            <span class="text-[10px] font-normal px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">Espejo / Asistente</span>
+            <span data-i18n="header_board_right">POSIBILIDADES POR CUADRO</span>
+            <span class="text-[10px] font-normal px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300" data-i18n="badge_mirror_assistant">Espejo / Asistente</span>
           </h2>
-          <span class="text-xs text-amber-700 font-medium">Amarillo = Candidato Único</span>
+          <span class="text-xs text-amber-700 font-medium" data-i18n="legend_single_candidate">Amarillo = Candidato Único</span>
         </div>
 
         <!-- Tablero 9x9 Derecho -->
@@ -318,14 +321,14 @@
         <div class="flex items-center justify-between pt-2 flex-wrap gap-2">
           <div class="flex items-center space-x-2">
             <button id="btn-posibles-mirror" class="px-3.5 py-2 bg-amber-200 hover:bg-amber-300 text-amber-900 text-xs font-bold rounded border border-amber-400 shadow-sm active:translate-y-0.5 transition cursor-pointer flex items-center gap-1.5" title="Desplegar posibilidades y candidatos únicos en la pantalla espejo">
-              <span>🔍</span> posibles
+              <span>🔍</span> <span data-i18n="btn_posibles">posibles</span>
             </button>
-            <button id="btn-ver-solucion" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition cursor-pointer">
+            <button id="btn-ver-solucion" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded border border-slate-300 shadow-sm active:translate-y-0.5 transition cursor-pointer" data-i18n="btn_mirror_solution">
               ver solución
             </button>
           </div>
           <div class="text-[11px] text-slate-500 italic">
-            El motor matemático calcula candidatos en tiempo real
+            <span data-i18n="mirror_realtime_note">El motor matemático calcula candidatos en tiempo real</span>
           </div>
         </div>
       </div>
@@ -338,14 +341,14 @@
   <div id="search-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-lg shadow-2xl border border-slate-300 max-w-lg w-full overflow-hidden flex flex-col">
       <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
-        <h3 class="font-bold text-sm">Colección de Sudokus Guardados</h3>
+        <h3 class="font-bold text-sm" data-i18n="modal_search_subtitle">Colección de Sudokus Guardados</h3>
         <button id="btn-close-search" class="text-slate-400 hover:text-white font-bold text-lg leading-none">&times;</button>
       </div>
 
       <!-- Carga directa por semilla matemática -->
       <div class="px-4 py-2.5 bg-blue-50/80 border-b border-blue-200 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div class="flex items-center space-x-2">
-          <span class="font-bold text-blue-900 flex items-center gap-1">🌱 Proponer Semilla:</span>
+          <span class="font-bold text-blue-900 flex items-center gap-1" data-i18n="modal_search_seed_box">🌱 Proponer Semilla:</span>
           <input type="text" id="modal-seed-input" placeholder="Ej. 40837" 
             class="w-24 bg-white border border-blue-300 rounded px-2 py-1 font-mono font-bold text-blue-900 text-center">
         </div>
@@ -359,10 +362,10 @@
           <label class="block text-xs font-semibold text-slate-600 mb-1">Dificultad:</label>
           <select id="search-level-filter" class="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800">
             <option value="todos">Todos los niveles</option>
-            <option value="facil">Fácil</option>
-            <option value="medio">Medio</option>
-            <option value="dificil">Difícil</option>
-            <option value="endemoniado">Endemoniado</option>
+            <option value="facil" data-i18n="diff_facil">Fácil</option>
+            <option value="medio" data-i18n="diff_medio">Medio</option>
+            <option value="dificil" data-i18n="diff_dificil">Difícil</option>
+            <option value="endemoniado" data-i18n="diff_endemoniado">Endemoniado</option>
           </select>
         </div>
 
@@ -559,9 +562,9 @@
     <span class="mx-2">•</span>
     <a href="manual.html" class="hover:text-blue-600 underline font-semibold">Manual de Usuario</a>
     <span class="mx-2">•</span>
-    <a href="privacidad.html" class="hover:text-blue-600 underline">Política de Privacidad</a>
+    <a href="privacidad.html" class="hover:text-blue-600 underline" data-i18n="footer_privacy">Política de Privacidad</a>
     <span class="mx-2">•</span>
-    <a href="https://github.com/guitusol/top-sudoku" target="_blank" class="hover:text-blue-600 underline">Código en GitHub</a>
+    <a href="https://github.com/guitusol/top-sudoku" target="_blank" class="hover:text-blue-600 underline" data-i18n="footer_github">Código en GitHub</a>
     <span class="mx-2">•</span>
     <a id="footer-link-arena" href="https://guitusol.github.io/sudoku-arena/" target="_blank" class="text-cyan-700 hover:text-cyan-900 font-bold hover:underline inline-flex items-center gap-1 transition">
       <span>⚔️</span> <span id="footer-text-arena">Sudoku Arena: Duelos & Competición</span>
@@ -575,7 +578,7 @@
         🚪
       </div>
       
-      <h2 class="text-xl font-black text-slate-900 mb-1">Top-Sudoku Cerrado</h2>
+      <h2 class="text-xl font-black text-slate-900 mb-1" data-i18n="exit_title">Top-Sudoku Cerrado</h2>
       <p class="text-xs font-semibold text-slate-500 mb-4">Has salido de la sesión con éxito.</p>
       
       <div class="bg-amber-50 border border-amber-300 rounded-xl p-3.5 text-left text-xs text-amber-900 mb-5 shadow-2xs space-y-1">
@@ -644,8 +647,128 @@
     </div>
   </div>
 
+
+  <!-- MODAL: Selector de Idioma (9 Idiomas Oficiales) -->
+  <div id="modal-language" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">
+      <button id="btn-close-lang-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-800 transition cursor-pointer">✕</button>
+      
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-3xl shadow-lg mb-3">
+        🌐
+      </div>
+      
+      <h2 id="modal-lang-title" class="text-xl font-black text-white mb-1" data-i18n="modal_lang_title">
+        🌐 Selecciona tu Idioma
+      </h2>
+      <p id="modal-lang-desc" class="text-slate-400 text-xs mb-5" data-i18n="modal_lang_desc">
+        Elige tu idioma preferido para la interfaz y los mensajes de Top-Sudoku.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left mb-2">
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="es">
+          <span class="text-2xl">🇪🇸</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Español</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">ES</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">Castellano</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="en">
+          <span class="text-2xl">🇬🇧</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>English</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">EN</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">International</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="ja">
+          <span class="text-2xl">🇯🇵</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>日本語</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">JA</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">日本 (Japan)</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="fr">
+          <span class="text-2xl">🇫🇷</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Français</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">FR</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">France, Canada, Suisse</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="de">
+          <span class="text-2xl">🇩🇪</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Deutsch</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">DE</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">Deutschland, Österreich</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="ca">
+          <span class="text-2xl">🟡</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Català</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">CA</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">Catalunya, Balears, Andorra</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="va">
+          <span class="text-2xl">🦇</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Valencià</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">VA</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">Comunitat Valenciana</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none" data-lang="eu">
+          <span class="text-2xl">🟢</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Euskara</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">EU</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">Euskal Herria</div>
+          </div>
+        </div>
+
+        <div class="lang-card bg-slate-900/60 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/80 p-3 rounded-xl cursor-pointer transition flex items-center gap-3 select-none sm:col-span-2" data-lang="gl">
+          <span class="text-2xl">🔵</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Galego</span>
+              <span class="text-[10px] font-mono text-amber-400 uppercase bg-amber-400/10 px-1.5 py-0.5 rounded">GL</span>
+            </div>
+            <div class="text-[11px] text-slate-400 truncate">Galicia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=2.0"></script>
+  <script type="module" src="js/app.js?v=2.1"></script>
   <!-- Modal Presentación Logotipo Top Sudoku -->
   <div id="modal-top-logo" onclick="if(event.target === this) window.closeTopLogoModal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">

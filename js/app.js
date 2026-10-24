@@ -2,6 +2,7 @@ import { SudokuEngine } from './sudoku-engine.js';
 import { SudokuStorage } from './sudoku-storage.js';
 import { SudokuOCR } from './sudoku-ocr.js';
 import { ArenaPromoManager } from './arena-promo.js';
+import { I18nManager } from './i18n.js';
 
 class SudokuApp {
   constructor() {
@@ -51,6 +52,7 @@ class SudokuApp {
     this.currentSeed = null;
     this.startAnalogClock();
     this.arenaPromo.init();
+    if (window.i18n) window.i18n.init();
 
     // Comprobar si la URL trae semilla o nivel especificado (?semilla=... o ?seed=...)
     const urlParams = new URLSearchParams(window.location.search);
@@ -67,6 +69,26 @@ class SudokuApp {
     } else {
       // Cargar Sudoku inicial por defecto (el clásico FoxPro #2)
       this.loadPuzzle('facil_2');
+    }
+  }
+
+  t(key, params = {}) {
+    return window.i18n ? window.i18n.t(key, params) : key;
+  }
+
+  onLanguageChanged(lang) {
+    if (this.arenaPromo) {
+      this.arenaPromo.customLang = lang;
+      this.arenaPromo.updateFooterLink();
+    }
+    const statusBadge = document.getElementById('status-badge');
+    if (statusBadge && this.mode === 'idle') {
+      statusBadge.textContent = this.t('status_ready');
+    }
+    if (this.mode === 'idle') {
+      this.setStatus(this.t('msg_ready'), 'info');
+    } else if (this.mode === 'jugando') {
+      this.setStatus(this.t('msg_playing'), 'success');
     }
   }
 
@@ -277,9 +299,9 @@ class SudokuApp {
         this.rejectionCriterion = e.target.value;
         localStorage.setItem('top_sudoku_rejection_criterion', this.rejectionCriterion);
         if (this.rejectionCriterion === 'solucion') {
-          this.setStatus('Criterio: Rechazo contra el resultado final (Solución única).', 'info');
+          this.setStatus(this.t('msg_criterion_unique'), 'info');
         } else {
-          this.setStatus('Criterio: Rechazo según la situación actual (Reglas clásicas de fila, col y caja).', 'info');
+          this.setStatus(this.t('msg_criterion_current'), 'info');
         }
       });
     });
@@ -605,7 +627,7 @@ class SudokuApp {
 
     // Si estamos jugando y es una casilla inicial fijada, no permitir sobreescribir
     if (this.mode === 'jugando' && this.initialGrid[row][col] !== 0) {
-      this.setStatus(`La casilla (${row + 1}, ${col + 1}) es una pista inicial fija del Sudoku.`, 'warn');
+      this.setStatus(this.t('msg_fixed_cell', { row: row + 1, col: col + 1 }), 'warn');
       return;
     }
 
@@ -647,13 +669,13 @@ class SudokuApp {
         if (this.solutionGrid && this.solutionGrid[row][col] !== 0) {
           if (num !== this.solutionGrid[row][col]) {
             this.flashCellError(row, col);
-            this.setStatus(`¡Rechazado! El número ${num} no coincide con el resultado final de esta casilla.`, 'error');
+            this.setStatus(this.t('msg_rejected_solution', { num }), 'error');
             return;
           }
         } else {
           if (!this.engine.isValidMove(this.playGrid, row, col, num)) {
             this.flashCellError(row, col);
-            this.setStatus(`¡Rechazado! El número ${num} colisiona en fila, columna o caja 3x3.`, 'error');
+            this.setStatus(this.t('msg_collision', { num }), 'error');
             return;
           }
         }
@@ -663,7 +685,7 @@ class SudokuApp {
           this.flashCellError(row, col);
           const collisions = this.findCollisions(this.playGrid, row, col, num);
           collisions.forEach(c => this.flashCellError(c.row, c.col));
-          this.setStatus(`¡Rechazado! El número ${num} colisiona en fila, columna o caja 3x3 en la situación actual.`, 'error');
+          this.setStatus(this.t('msg_rejected_current', { num }), 'error');
           return;
         }
       }
@@ -677,7 +699,7 @@ class SudokuApp {
       } else {
         const isFull = this.playGrid.every(r => r.every(v => v !== 0));
         if (isFull) {
-          this.setStatus('Tablero completo, pero contiene contradicciones o números repetidos.', 'error');
+          this.setStatus(this.t('msg_board_error'), 'error');
         } else {
           this.advanceToNextCell(row, col);
         }
@@ -886,7 +908,7 @@ class SudokuApp {
     const res = this.engine.solve(this.initialGrid);
     if (!res.solved) {
       alert('Este planteamiento no tiene ninguna solución matemática válida. Revisa los números introducidos.');
-      this.setStatus('Error: El planteamiento introducido no tiene solución matemática.', 'error');
+      this.setStatus(this.t('msg_no_math_solution'), 'error');
       return;
     }
     this.solutionGrid = this.engine.cloneGrid(res.solution);
@@ -1021,7 +1043,7 @@ class SudokuApp {
     this.dom.startDateInput.value = '';
     this.dom.elapsedTimeInput.value = '00:00';
 
-    this.setStatus(`Cargado ${puzzle.name}. Pulsa "Iniciar" para comenzar la partida.`, 'info');
+    this.setStatus(this.t('msg_loaded_ok', { name: puzzle.name }), 'info');
     this.updateBoardDisplay();
   }
 
@@ -1066,7 +1088,7 @@ class SudokuApp {
 
     this.startTimer();
     this.updateBoardDisplay(); // ¡Limpia el tablero y lo deja listo para resolver!
-    this.setStatus('Partida en curso. Tablero preparado con los números iniciales. ¡A resolver!', 'success');
+    this.setStatus(this.t('msg_playing'), 'success');
   }
 
   startTimer() {
@@ -1298,7 +1320,7 @@ class SudokuApp {
       this.storage.markAsSolved(this.currentPuzzleId, this.elapsedSeconds);
     }
     const formattedTime = this.formatTime(this.elapsedSeconds);
-    this.setStatus(`¡ENHORABUENA! 🎉 Has completado el Sudoku en ${formattedTime}.`, 'success');
+    this.setStatus(this.t('msg_game_won', { time: formattedTime }), 'success');
 
     // Sugerencia pedagógica hacia Sudoku Arena con control de nivel, frecuencia e idioma
     if (this.arenaPromo && this.arenaPromo.checkAndSuggest(formattedTime, this.currentLevel, this.storage)) {
