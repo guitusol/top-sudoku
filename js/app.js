@@ -94,6 +94,10 @@ class SudokuApp {
       // Botones de control
       btnPlantear: document.getElementById('btn-plantear'),
       btnCerrar: document.getElementById('btn-cerrar'),
+      btnHeaderCerrar: document.getElementById('btn-header-cerrar'),
+      exitScreen: document.getElementById('exit-screen'),
+      btnExitTryClose: document.getElementById('btn-exit-try-close'),
+      btnExitResume: document.getElementById('btn-exit-resume'),
       btnGrabar: document.getElementById('btn-grabar'),
       btnBuscar: document.getElementById('btn-buscar'),
       btnIniciar: document.getElementById('btn-iniciar'),
@@ -185,6 +189,9 @@ class SudokuApp {
     this.dom.btnPosiblesMirror?.addEventListener('click', () => this.togglePosibles());
     this.dom.btnReiniciar.addEventListener('click', () => this.handleReiniciar());
     this.dom.btnCerrar.addEventListener('click', () => this.handleCerrar());
+    this.dom.btnHeaderCerrar?.addEventListener('click', () => this.handleCerrar());
+    this.dom.btnExitTryClose?.addEventListener('click', () => this.tryCloseWindow());
+    this.dom.btnExitResume?.addEventListener('click', () => this.resumeFromExit());
 
     // Superponer posibles en pantalla de solución
     this.dom.toggleOverlayPossibilities?.addEventListener('change', (e) => {
@@ -1208,10 +1215,77 @@ class SudokuApp {
     this.setStatus('Cambios cancelados.', 'info');
   }
 
+  hasUserMadeMoves() {
+    if (this.mode !== 'jugando') return false;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        if (this.initialGrid[r][c] === 0 && this.playGrid[r][c] !== 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   handleCerrar() {
+    if (this.hasUserMadeMoves()) {
+      this.openConfirmModal('Tienes una partida en curso con números colocados. ¿Deseas abandonar la partida y salir de Top-Sudoku? Se perderá el avance actual.', () => {
+        this.executeExit();
+      });
+      return;
+    }
+    this.executeExit();
+  }
+
+  executeExit() {
     this.stopTimer();
     this.mode = 'idle';
     this.setStatus('Sesión cerrada.', 'info');
+
+    // 1. Si se ejecuta dentro de wrapper nativo (Capacitor / Cordova / Electron)
+    try {
+      if (typeof window !== 'undefined' && window.Capacitor?.Plugins?.App?.exitApp) {
+        window.Capacitor.Plugins.App.exitApp();
+        return;
+      }
+      if (typeof window !== 'undefined' && window.Capacitor?.App?.exitApp) {
+        window.Capacitor.App.exitApp();
+        return;
+      }
+      if (typeof navigator !== 'undefined' && navigator.app?.exitApp) {
+        navigator.app.exitApp();
+        return;
+      }
+    } catch (e) {}
+
+    // 2. Intentar cerrar ventana si el navegador lo permite
+    try {
+      window.close();
+    } catch (e) {}
+
+    // 3. Mostrar pantalla completa de salida
+    if (this.dom.exitScreen) {
+      this.dom.exitScreen.classList.remove('hidden');
+    }
+  }
+
+  tryCloseWindow() {
+    try {
+      if (window.history && window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+    } catch (e) {}
+    try {
+      window.close();
+    } catch (e) {}
+  }
+
+  resumeFromExit() {
+    if (this.dom.exitScreen) {
+      this.dom.exitScreen.classList.add('hidden');
+    }
+    this.setStatus('¡Bienvenido de nuevo a Top-Sudoku!', 'info');
   }
 
   handleGameWon() {

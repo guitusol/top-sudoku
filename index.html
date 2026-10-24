@@ -67,6 +67,7 @@
           <span>🔄</span>
         </button>
         <a href="manual.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition" title="Manual del Usuario y Escuela Lógica"><span>📖</span><span>Manual</span></a>
+        <button type="button" id="btn-header-cerrar" class="bg-rose-700 hover:bg-rose-600 active:bg-rose-800 text-white font-semibold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm transition cursor-pointer" title="Cerrar y salir de Top-Sudoku"><span>🚪</span><span>Salir</span></button>
         <span id="status-badge" class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded">Listo</span>
       </div>
     </div>
@@ -563,8 +564,41 @@
     <a href="https://github.com/guitusol/top-sudoku" target="_blank" class="hover:text-blue-600 underline">Código en GitHub</a>
   </footer>
 
+  <!-- PANTALLA COMPLETA DE SALIDA (Top-Sudoku Cerrado) -->
+  <div id="exit-screen" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden animate-fade-in">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-300 max-w-md w-full p-6 text-center text-slate-800 relative">
+      <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl shadow-inner">
+        🚪
+      </div>
+      
+      <h2 class="text-xl font-black text-slate-900 mb-1">Top-Sudoku Cerrado</h2>
+      <p class="text-xs font-semibold text-slate-500 mb-4">Has salido de la sesión con éxito.</p>
+      
+      <div class="bg-amber-50 border border-amber-300 rounded-xl p-3.5 text-left text-xs text-amber-900 mb-5 shadow-2xs space-y-1">
+        <div class="font-bold flex items-center gap-1.5 text-amber-950">
+          <span>📱</span>
+          <span>Para salir por completo al escritorio:</span>
+        </div>
+        <p class="text-[11px] leading-relaxed text-amber-800/90">
+          Ya puedes <strong>cerrar esta pestaña</strong> del navegador o pulsar el botón <strong>Inicio / Salir</strong> de tu teléfono o teclado.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2.5 justify-center text-xs font-bold">
+        <button id="btn-exit-try-close" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-2.5 px-4 rounded-xl transition cursor-pointer border border-slate-300 flex items-center justify-center gap-1.5 shadow-xs">
+          <span>✕</span>
+          <span>Cerrar Pestaña / Atrás</span>
+        </button>
+        <button id="btn-exit-resume" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-xl transition cursor-pointer shadow-md flex items-center justify-center gap-1.5">
+          <span>🎮</span>
+          <span>Volver a Jugar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=1.7"></script>
+  <script type="module" src="js/app.js?v=1.8"></script>
   <!-- Modal Presentación Logotipo Top Sudoku -->
   <div id="modal-top-logo" onclick="if(event.target === this) window.closeTopLogoModal()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative text-white animate-fade-in" onclick="event.stopPropagation()">
