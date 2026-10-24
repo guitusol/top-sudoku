@@ -8,7 +8,7 @@ class SudokuApp {
   constructor() {
     this.engine = new SudokuEngine();
     this.storage = new SudokuStorage();
-    this.arenaPromo = new ArenaPromoManager();
+    this.arenaPromo = new ArenaPromoManager(this);
 
     // Estado del juego
     this.mode = 'idle'; // 'idle', 'plantear', 'jugando', 'resuelto'
@@ -54,21 +54,56 @@ class SudokuApp {
     this.arenaPromo.init();
     if (window.i18n) window.i18n.init();
 
-    // Comprobar si la URL trae semilla o nivel especificado (?semilla=... o ?seed=...)
+    // Comprobar si la URL trae semilla, nivel, tablero o desafío especificado
     const urlParams = new URLSearchParams(window.location.search);
-    const urlSeed = urlParams.get('semilla') || urlParams.get('seed');
-    const urlNivel = urlParams.get('nivel') || urlParams.get('level');
-    if (urlNivel && ['facil', 'medio', 'dificil', 'endemoniado'].includes(urlNivel.toLowerCase())) {
-      this.currentLevel = urlNivel.toLowerCase();
-      const radio = document.querySelector(`input[name="nivel"][value="${this.currentLevel}"]`);
-      if (radio) radio.checked = true;
+    let urlSeed = urlParams.get('semilla') || urlParams.get('seed');
+    const urlNivel = urlParams.get('nivel') || urlParams.get('level') || urlParams.get('diff');
+    const urlTablero = urlParams.get('tablero') || urlParams.get('board') || urlParams.get('custom');
+    const urlDesafio = urlParams.get('desafio');
+    const urlOrigen = urlParams.get('origen');
+
+    if (urlDesafio && urlDesafio.startsWith('ARENA-')) {
+      const parts = urlDesafio.split('-');
+      if (parts.length >= 3) {
+        const diffMap = { 'FACI': 'facil', 'MEDI': 'medio', 'DIFI': 'dificil', 'ENDE': 'endemoniado' };
+        const d = diffMap[parts[1].toUpperCase()];
+        if (d) this.currentLevel = d;
+        if (!urlSeed && parts[2]) urlSeed = parts[2];
+      }
     }
 
-    if (urlSeed) {
+    if (urlNivel) {
+      const diffMap = {
+        'facil': 'facil', 'easy': 'facil', 'faci': 'facil',
+        'medio': 'medio', 'medium': 'medio', 'medi': 'medio',
+        'dificil': 'dificil', 'hard': 'dificil', 'difi': 'dificil',
+        'endemoniado': 'endemoniado', 'expert': 'endemoniado', 'evil': 'endemoniado', 'ende': 'endemoniado'
+      };
+      const normalizedLevel = diffMap[urlNivel.toLowerCase()];
+      if (normalizedLevel) {
+        this.currentLevel = normalizedLevel;
+      }
+    }
+    const radio = document.querySelector(`input[name="nivel"][value="${this.currentLevel}"]`);
+    if (radio) radio.checked = true;
+
+    if (urlTablero) {
+      this.loadPuzzleBySeedOrString(urlTablero, this.currentLevel, urlSeed);
+      if (urlOrigen === 'sudoku-arena' || urlDesafio) {
+        this.setStatus(this.t('toast_transferred_from_arena', { seed: urlSeed || '' }), 'success');
+      }
+    } else if (urlSeed) {
       this.loadPuzzleBySeed(urlSeed, this.currentLevel);
+      if (urlOrigen === 'sudoku-arena' || urlDesafio) {
+        this.setStatus(this.t('toast_transferred_from_arena', { seed: urlSeed }), 'success');
+      }
     } else {
       // Cargar Sudoku inicial por defecto (el clásico FoxPro #2)
       this.loadPuzzle('facil_2');
+    }
+
+    if (this.arenaPromo) {
+      this.arenaPromo.updateFooterLink();
     }
   }
 
@@ -1443,17 +1478,17 @@ class SudokuApp {
   /**
    * Carga un Sudoku tanto si el usuario introduce una semilla como una cadena de 81 caracteres
    */
-  loadPuzzleBySeedOrString(raw, difficulty = this.currentLevel) {
+  loadPuzzleBySeedOrString(raw, difficulty = this.currentLevel, seed = null) {
     const board81 = this.parseBoardString(raw);
     if (board81) {
       this.stopTimer();
       this.mode = 'idle';
-      this.currentSeed = null;
+      this.currentSeed = seed;
       this.currentBoardString = raw.trim();
       this.currentLevel = difficulty;
 
       const nextNum = this.storage.getNextNumberForLevel(this.currentLevel);
-      this.currentPuzzleId = `str81_${Date.now()}`;
+      this.currentPuzzleId = seed ? `seed_${seed}_${difficulty}` : `str81_${Date.now()}`;
       this.currentNumber = nextNum;
       this.dom.puzzleNumberInput.value = nextNum;
 
@@ -1465,10 +1500,16 @@ class SudokuApp {
 
       this.dom.startDateInput.value = '';
       this.dom.elapsedTimeInput.value = '00:00';
-      if (this.dom.seedInput) this.dom.seedInput.value = raw.substring(0, 12) + '...';
+      if (this.dom.seedInput) this.dom.seedInput.value = seed || (raw.substring(0, 12) + '...');
+      if (this.dom.modalSeedInput) this.dom.modalSeedInput.value = seed || '';
 
-      this.setStatus(this.t('msg_string81_loaded', { level: difficulty.toUpperCase(), num: nextNum }), 'success');
+      if (seed) {
+        this.setStatus(this.t('msg_seed_loaded', { seed, level: difficulty.toUpperCase(), clues: this.initialGrid.flat().filter(v => v > 0).length }), 'success');
+      } else {
+        this.setStatus(this.t('msg_string81_loaded', { level: difficulty.toUpperCase(), num: nextNum }), 'success');
+      }
       this.updateBoardDisplay();
+      if (this.arenaPromo) this.arenaPromo.updateFooterLink();
       return;
     }
 
@@ -1558,6 +1599,7 @@ class SudokuApp {
 
     this.setStatus(this.t('msg_seed_loaded', { seed, level: difficulty.toUpperCase(), clues: game.initialClues }), 'success');
     this.updateBoardDisplay();
+    if (this.arenaPromo) this.arenaPromo.updateFooterLink();
   }
 
   // ==========================================

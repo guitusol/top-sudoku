@@ -99,7 +99,8 @@ export const ARENA_PROMO_I18N = {
 };
 
 export class ArenaPromoManager {
-  constructor() {
+  constructor(appInstance = null) {
+    this.app = appInstance;
     this.storageKey = 'top_sudoku_arena_promo_v1';
     this.lang = this.detectUserLang();
     this.modal = null;
@@ -125,8 +126,39 @@ export class ArenaPromoManager {
 
   getArenaUrl() {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const baseUrl = isLocal ? 'http://localhost/sudoku-arena/' : 'https://guitusol.github.io/sudoku-arena/';
-    return `${baseUrl}?lang=${this.lang}`;
+    const baseUrl = isLocal ? '/sudoku-arena/' : 'https://guitusol.github.io/sudoku-arena/';
+
+    const app = this.app || window.sudokuApp;
+    let seed = '';
+    let level = 'medio';
+    let boardStr = '';
+
+    if (app) {
+      seed = app.currentSeed || (app.dom?.seedInput?.value ? app.dom.seedInput.value.trim() : '') || '';
+      level = app.currentLevel || 'medio';
+      if (app.initialGrid && Array.isArray(app.initialGrid)) {
+        boardStr = app.initialGrid.map(row => row.map(c => (c > 0 ? c : '0')).join('')).join('');
+      } else if (app.playGrid && Array.isArray(app.playGrid)) {
+        boardStr = app.playGrid.map(row => row.map(c => (c > 0 ? c : '0')).join('')).join('');
+      }
+    }
+
+    const lang = this.detectUserLang();
+    const params = new URLSearchParams();
+    params.set('lang', lang);
+    if (seed) params.set('semilla', seed);
+    if (level) params.set('nivel', level);
+    if (boardStr && boardStr.length === 81) params.set('tablero', boardStr);
+    params.set('nombre', 'Top-Sudoku');
+    params.set('origen', 'top-sudoku');
+
+    if (seed && !isNaN(parseInt(seed, 10))) {
+      const diffPrefixMap = { facil: 'FACI', medio: 'MEDI', dificil: 'DIFI', endemoniado: 'ENDE' };
+      const diffPrefix = diffPrefixMap[level] || 'MEDI';
+      params.set('desafio', `ARENA-${diffPrefix}-${seed}`);
+    }
+
+    return `${baseUrl}?${params.toString()}`;
   }
 
   getPromoState() {
@@ -157,10 +189,30 @@ export class ArenaPromoManager {
   }
 
   updateFooterLink() {
+    const url = this.getArenaUrl();
     const footerLink = document.getElementById('footer-link-arena');
     const footerText = document.getElementById('footer-text-arena');
+    const headerBtn = document.getElementById('btn-header-arena');
+    const goBtn = document.getElementById('btn-arena-promo-go');
+
     if (footerLink) {
-      footerLink.href = this.getArenaUrl();
+      footerLink.href = url;
+    }
+    if (headerBtn) {
+      headerBtn.href = url;
+    }
+    const updateLink = (e) => {
+      const link = e.target.closest('#footer-link-arena, #btn-header-arena, #btn-arena-promo-go');
+      if (link) {
+        link.href = this.getArenaUrl();
+      }
+    };
+    document.addEventListener('pointerdown', updateLink, true);
+    document.addEventListener('mousedown', updateLink, true);
+    document.addEventListener('click', updateLink, true);
+
+    if (goBtn) {
+      goBtn.href = url;
     }
     if (footerText) {
       const texts = ARENA_PROMO_I18N[this.lang] || ARENA_PROMO_I18N.es;
